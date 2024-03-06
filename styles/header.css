@@ -1,0 +1,11 @@
+.topheader {
+    background-color: var(--elements-backgroud-color-other);
+    margin: 0 var(--margin);
+    line-height: 50px;
+    text-align: center;
+}
+
+.topheaderdiv {
+    margin: 0;
+    padding: 0;
+}

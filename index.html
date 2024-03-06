@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="myPocketUML : Pocket Tool for DDL to PlantUML conversion">
+    <meta name="author" content="Armando Abreu Duque">
+    <meta name="keywords" content="dll, plantuml, uml, tool, software, developer">
+    <title>myPocketUML</title>
+    <link rel="stylesheet" href="styles/normalize.css">
+    <link rel="stylesheet" href="styles/general.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/conversion.css">
+    <link rel="stylesheet" href="styles/diagram.css">
+
+    <script defer src="scripts/rawdeflate.js"></script>
+    <script defer src="scripts/puml_entity.js"></script>
+    <script defer src="scripts/app.js"></script>
+</head>
+<body>
+    <header class="topheader">
+        <div class="topheaderdiv">
+            <h1>Pocket Tool for DDL to PlantUML conversion</h1>
+        </div>
+    </header>
+
+    <main>
+        <article>
+            <section id="section_conversion">
+                <div class="section_div_conversion_grid">
+                    <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_DDL">
+                        <label for="DDL">DDL code</label> <br>
+                        <textarea name="DDL" id="DDL" cols="130" rows="10"></textarea> <br>
+                        <button type="button" onclick="openFile()">Load DDL</button>
+                        <input id="inputFile" type='file' accept=".ddl, .sql, .txt" style="display: none;" onchange="readFile(event)" />
+                    </div>
+                    <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_space">
+                        <div id="div_button_generate" onclick="generateDiagram()">
+                            <img src="img/arrow.png" alt="generate arrow" width="50px">
+                        </div>
+                    </div>
+                    <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_UML">
+                        <label for="UML">PlantUML code</label> <br>
+                        <textarea name="UML" id="UML" cols="130" rows="10"></textarea> <br>
+                        <button type="button" onclick="downloadUML()">Save UML</button>
+                    </div>
+                </div>
+            </section>
+            <section id="section_diagram">
+                <div class="section_div_diagram">
+                    <iframe id="iframe_diagram" src="" frameborder="0"></iframe>
+                </div>
+            </section>
+        </article>
+    </main>
+</body>
+</html>

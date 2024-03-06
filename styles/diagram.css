@@ -1,0 +1,13 @@
+
+.section_div_diagram {
+    text-align: center;
+}
+
+#iframe_diagram {
+    scroll-behavior: auto;
+    width: 100%;
+    height: 580px;
+    border-width: 5px;
+    border-color: aqua;
+    padding: 5px;
+}

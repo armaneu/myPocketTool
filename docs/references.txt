@@ -1,0 +1,3 @@
+- for openFile() method:
+	https://stackoverflow.com/questions/3582671/how-to-open-a-local-disk-file-with-javascript
+	https://stackoverflow.com/questions/5138719/change-default-text-in-input-type-file

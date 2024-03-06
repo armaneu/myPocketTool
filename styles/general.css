@@ -1,0 +1,85 @@
+/**********************************************************************************/
+/*                                  GENERAL STYLES                                */
+/**********************************************************************************/
+
+:root {
+    /* Color Hunt Palette f5f7f8f4ce14495e5745474b - https://colorhunt.co/palette/f5f7f8f4ce14495e5745474b */
+    --color-01: #45474B;
+    --color-02: #495E57;
+    --color-03: #F4CE14;
+    --color-04: #F5F7F8;
+    /* Other colors */
+    --white: #f5f5f5;
+    --shadow: #808080;
+    --black: #121212;
+
+    /* Theme colors */
+    --theme-color: var(--color-04);
+    --theme-color-dark: var(--black);
+    --elements-backgroud-color: var(--color-01);
+    --elements-backgroud-color-alter: var(--color-02);
+    --elements-backgroud-color-other: var(--color-03);
+  
+    /* Font text colors */
+    --text-color: var(--black);
+    --text-color-inverse: var(--theme-color);
+    
+    /* Settings */
+    --margin: 1%;
+    --min-width: 360px;
+    --max-width: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Helvetica, sans-serif;
+    background-color: var(--theme-color);
+    color: var(--text-color);
+    margin: 0% auto;
+    min-width: var(--min-width);
+    max-width: var(--max-width);
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+p {
+    font-size: 16px;
+}
+
+main {
+    ***margin-top: 92px; /*Header height + Navbar height = (50px + 42px)*/
+    ***padding-top: 3px;
+}
+
+article {
+    margin: 0 var(--margin);
+    top: 0;
+    left: 0;
+}
+
+section[id] {
+    font-size: 16px;
+    padding: 5px 0px;
+    text-align: justify;
+    background-color: var(--theme-color);
+}
