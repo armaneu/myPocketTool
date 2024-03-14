@@ -124,10 +124,7 @@ Oracle = {
                     sql_sentence.split('').reverse().join('').indexOf(')') > -1) {  // looking for the last occurrence of  ')'
                     
                     // START - Algorithm to know the ENTITY NAME of 'CREATE TABLE'
-                    let index0 = sql_sentence.toUpperCase().indexOf('CREATE TABLE');  // entity name is between CREATE TABLE and the first '(' occurrence
-                    let index1 = index0 + 'CREATE TABLE'.length + 1;  // index before the entity name
-                    let index2 = sql_sentence.indexOf('(');  // index after the entity name  :  [index1] => entity_name <= [index2]
-                    entity_name = sql_sentence.substring(index1, index2).trim().toUpperCase();  // entity name (removing whitespace)
+                    entity_name = Utils.getStringBetweenStrings(sql_sentence, 'CREATE TABLE', '(').toUpperCase();
                     // END   - Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     //
                     //
@@ -140,88 +137,42 @@ Oracle = {
                             
                             // Looking for PRIMARY KEY(s)
                             if (alter_table_key_sentence.toUpperCase().indexOf('PRIMARY KEY') > -1) {  // START - Algorithm to know the PRIMARY KEY(s) of the entity
-                                // Looking for primary key(s)
-                                let pk_index = alter_table_key_sentence.toUpperCase().indexOf('PRIMARY KEY') + 'PRIMARY KEY'.length;
-                                let pk_sentence_length = alter_table_key_sentence.length;
-                                let pk_opening_index = -1, pk_closing_index = -1;  
-                                for (pk_index; pk_index < pk_sentence_length; pk_index++) {
-                                    if (alter_table_key_sentence.charAt(pk_index) == '(') {
-                                        pk_opening_index = pk_index + 1;  // getting the index of the first opening parenthesis occurrence
-                                    }
-                                    else if (alter_table_key_sentence.charAt(pk_index) == ')' && pk_opening_index > -1 && pk_opening_index < pk_index) {
-                                        pk_closing_index = pk_index;  // getting the index of the first closing parenthesis occurrence
-                                        break;  // ending the loop
-                                    }
-                                }
-                                // Getting primary key(s)
-                                if (pk_opening_index > -1 && pk_closing_index > -1) {
-                                    let pk = alter_table_key_sentence.substring(pk_opening_index, pk_closing_index).trim().split(',');  // removes whitespaces and split it in case there are multiple keys
-                                    pk_array.length = pk_array.length + pk.length;
-                                    for (let i = 0; i < pk.length; i++) {  // removes whitespaces
-                                        pk_array[i] = pk[i].trim().toUpperCase();
-                                    }
+                                // Getting primary key(s)                    
+                                let pk = Utils.getStringBetweenStrings(alter_table_key_sentence, 'PRIMARY KEY (', ')').toUpperCase().split(',');  // split it in case there are multiple keys
+                                pk_array.length = pk_array.length + pk.length;
+                                for (let i = 0; i < pk.length; i++) {  // removes whitespaces
+                                    pk_array[i] = pk[i].trim().toUpperCase();
                                 }
                             }  // END - Algorithm to know the PRIMARY KEY(s) of the entity
                             // Looking for FOREIGN KEY(s)
-                            else if (alter_table_key_sentence.toUpperCase().indexOf('FOREIGN KEY') > -1) {  // START - Algorithm to know the FOREIGN KEY(s) of the entity
-                                // Looking for foreign key(s)
-                                let fk_index = alter_table_key_sentence.toUpperCase().indexOf('FOREIGN KEY') + 'FOREIGN KEY'.length;
-                                let fk_sentence_length = alter_table_key_sentence.length;
-                                let fk_opening_index = -1, fk_closing_index = -1;  
-                                for (fk_index; fk_index < fk_sentence_length; fk_index++) {
-                                    if (alter_table_key_sentence.charAt(fk_index) == '(') {
-                                        fk_opening_index = fk_index + 1;  // getting the index of the first opening parenthesis occurrence
-                                    }
-                                    else if (alter_table_key_sentence.charAt(fk_index) == ')' && fk_opening_index > -1 && fk_opening_index < fk_index) {
-                                        fk_closing_index = fk_index;  // getting the index of the first closing parenthesis occurrence
-                                        break;  // ending the loop
-                                    }
-                                }
+                            else if (alter_table_key_sentence.toUpperCase().indexOf('FOREIGN KEY') > -1) {  // START - Algorithm to know the FOREIGN KEY(s) of the entity                
                                 // Getting foreign key(s)
-                                if (fk_opening_index > -1 && fk_closing_index > -1) {
-                                    if (alter_table_key_sentence.substring(fk_opening_index, fk_closing_index).indexOf(',') > -1) { // multiple foreign keys in the same ALTER TABLE sentence
-                                        let fk_multiple = alter_table_key_sentence.substring(fk_opening_index, fk_closing_index).trim().split(',');  // removes whitespaces and split it in case there are multiple keys
-                                        fk_array.length = fk_array.length + fk_multiple.length;  // increase the size of the array for the new items
-                                        
-                                        for (let i = 0; i < fk_multiple.length; i++) {  // removes whitespaces
-                                            fk_array[i] = fk_multiple[i].trim().toUpperCase();
-                                            console.log(`LOOP ${entity_name} => fk_array [${i}]: ${fk_multiple[i]}`);
-                                        }
-                                    } else {  // only one foreign key in the ALTER TABLE sentence
-                                        let fk_single = alter_table_key_sentence.substring(fk_opening_index, fk_closing_index).trim();  // removes whitespaces
-                                        fk_array.length++;  // increase the size of the array in one for the new item
-                                        fk_array[fk_array.length - 1] = fk_single.toUpperCase();
-                                    }  
-                                }
+                                if (Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').indexOf(',') > -1) { // multiple foreign keys in the same ALTER TABLE sentence
+                                    let fk_multiple = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').toUpperCase().split(',');  // split it in case there are multiple keys
+                                    fk_array.length = fk_array.length + fk_multiple.length;  // increase the size of the array for the new items
+                                    
+                                    for (let i = 0; i < fk_multiple.length; i++) {  // removes whitespaces
+                                        fk_array[i] = fk_multiple[i].trim().toUpperCase();
+                                    }
+                                } else {  // only one foreign key in the ALTER TABLE sentence
+                                    let fk_single = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').toUpperCase();
+                                    fk_array.length++;  // increase the size of the array in one for the new item
+                                    fk_array[fk_array.length - 1] = fk_single.toUpperCase();
+                                }  
                             }  // END - Algorithm to know the FOREIGN KEY(s) of the entity
+                            //
                             //
                             //
                             // START - Algorithm to know the RELATIONSHIPS among of the entities
                             if (alter_table_key_sentence.toUpperCase().indexOf('REFERENCES') > -1 ) {  // asking if the sentence has the 'REFERENCES' SQL keyword
-                                // START - Algorithm to know the ENTITY NAME of 'REFERENCES'
-                                let sentence_length = alter_table_key_sentence.length;
-                                let entity_reference_name = '';
-                                let index00 = alter_table_key_sentence.toUpperCase().indexOf('REFERENCES');  // entity name is between REFERENCES and the first '(' occurrence after its name
-                                let index01 = index00 + 'REFERENCES'.length + 1;  // index before the entity name
-                                for (let index = index01; index < sentence_length; index++) {
-                                    if (entity_reference_name.length > 0 && alter_table_key_sentence.charAt(index) == ' ') {
-                                        break;
-                                    } else {
-                                        entity_reference_name += alter_table_key_sentence.charAt(index);
-                                    }
-                                }
-                                entity_reference_name = entity_reference_name.trim().toUpperCase();  // entity reference name (removing whitespace)
-
+                                let entity_reference_name = Utils.getStringBetweenStrings(alter_table_key_sentence, 'REFERENCES', '(').toUpperCase();
                                 const relationship = {entityName:`${entity_name}`, entityReferenceName:`${entity_reference_name}`};
                                 relationships_array.push(relationship);
-                                // END - Algorithm to know the ENTITY NAME of 'REFERENCES'
                             }
                             // END - Algorithm to know the RELATIONSHIPS between the entities
                         }
                     }
 
-                    console.log(`BEFORE LOOP => pk_array: ${pk_array}\npk_array length: ${pk_array.length}`);
-                    console.log(`BEFORE LOOP => fk_array: ${fk_array}\nfk_array length: ${fk_array.length}`);
                     // There are some foreign key which are primary keys, in tha case must identify them as 
                     // PK : Primary Key,  PF : Primary Foreign,  FK : Foreign Key
                     let pk_length = pk_array.length, fk_length = fk_array.length;
@@ -246,19 +197,17 @@ Oracle = {
                             fk_array[k] = `(FK)  ${fk_array[k]}`;
                         }
                     }
-
-                    console.log(`AFTER LOOP => pk_array: ${pk_array}\npk_array length: ${pk_array.length}`);
-                    console.log(`AFTER LOOP => fk_array: ${fk_array}\nfk_array length: ${fk_array.length}`);
                 }
                 
 
                 plantumlCode = Oracle.plantuml_entity(plantumlCode, entity_name, pk_array, fk_array, `this is the entity ${entity_name}`);
             }
-            // Establishing the relationships between entities
             
+            // Establishing the relationships between entities
             plantumlCode = Oracle.plantuml_relationships(plantumlCode, relationships_array);
+            
             // END - PlantUML
-            plantumlCode = Oracle.plantuml_end(plantumlCode);  // endding the definition of PlantUML syntax
+            plantumlCode = Oracle.plantuml_end(plantumlCode);  // ending the definition of PlantUML syntax
 
         
             return plantumlCode;
