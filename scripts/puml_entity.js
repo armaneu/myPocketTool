@@ -139,9 +139,8 @@ Oracle = {
                             if (alter_table_key_sentence.toUpperCase().indexOf('PRIMARY KEY') > -1) {  // START - Algorithm to know the PRIMARY KEY(s) of the entity
                                 // Getting primary key(s)                    
                                 let pk = Utils.getStringBetweenStrings(alter_table_key_sentence, 'PRIMARY KEY (', ')').toUpperCase().split(',');  // split it in case there are multiple keys
-                                pk_array.length = pk_array.length + pk.length;
                                 for (let i = 0; i < pk.length; i++) {  // removes whitespaces
-                                    pk_array[i] = pk[i].trim().toUpperCase();
+                                    pk_array.push(pk[i].trim().toUpperCase());
                                 }
                             }  // END - Algorithm to know the PRIMARY KEY(s) of the entity
                             // Looking for FOREIGN KEY(s)
@@ -149,15 +148,13 @@ Oracle = {
                                 // Getting foreign key(s)
                                 if (Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').indexOf(',') > -1) { // multiple foreign keys in the same ALTER TABLE sentence
                                     let fk_multiple = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').toUpperCase().split(',');  // split it in case there are multiple keys
-                                    fk_array.length = fk_array.length + fk_multiple.length;  // increase the size of the array for the new items
                                     
                                     for (let i = 0; i < fk_multiple.length; i++) {  // removes whitespaces
-                                        fk_array[i] = fk_multiple[i].trim().toUpperCase();
+                                        fk_array.push(fk_multiple[i].trim().toUpperCase());
                                     }
                                 } else {  // only one foreign key in the ALTER TABLE sentence
                                     let fk_single = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').toUpperCase();
-                                    fk_array.length++;  // increase the size of the array in one for the new item
-                                    fk_array[fk_array.length - 1] = fk_single.toUpperCase();
+                                    fk_array.push(fk_single.toUpperCase());
                                 }  
                             }  // END - Algorithm to know the FOREIGN KEY(s) of the entity
                             //
