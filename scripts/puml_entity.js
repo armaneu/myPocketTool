@@ -78,15 +78,15 @@ Oracle = {
     },
 
 
-    plantuml_entity: function(puml_code, entity_name, entity_pk_array = null, entity_fk_array = null, entity_description = null) {
+    plantuml_entity: function(puml_code, entity) {
         let plantumlCode = puml_code;
 
-        if (entity_name != null && entity_name.length > 0) {
+        if (entity.name != null && entity.name.length > 0) {
             // Setting the ENTITY NAME
-            plantumlCode += `entity ${entity_name} {\n`;  // entity name
+            plantumlCode += `entity ${entity.name} {\n`;  // entity name
             // Setting PRIMARY KEY(s)
-            if (entity_pk_array != null && Array.isArray(entity_pk_array)) {
-                for (const pk of entity_pk_array) {  // primary key(s)
+            if (entity.pk_array != null && Array.isArray(entity.pk_array)) {
+                for (const pk of entity.pk_array) {  // primary key(s)
                     if (pk != null && pk != '') {
                         plantumlCode += `* ${pk}\n`;
                     }
@@ -94,8 +94,8 @@ Oracle = {
             }
             plantumlCode += '--\n';  // separator
             // Setting FOREIGN KEY(s)
-            if (entity_fk_array != null && Array.isArray(entity_fk_array)) {
-                for (const fk of entity_fk_array) {  // foreign key(s)
+            if (entity.fk_array != null && Array.isArray(entity.fk_array)) {
+                for (const fk of entity.fk_array) {  // foreign key(s)
                     if (fk != null && fk != '') {
                         plantumlCode += `* ${fk}\n`;
                     }
@@ -103,8 +103,8 @@ Oracle = {
             }
             plantumlCode += '--\n';  // separator
             // Setting Description
-            if (entity_description != null && entity_description.length > 0) {  // entity description
-                plantumlCode += `${entity_description}\n`;
+            if (entity.description != null && entity.description.length > 0) {  // entity description
+                plantumlCode += `${entity.description}\n`;
             }
             plantumlCode += '}\n\n';  // closing
         }
@@ -159,6 +159,7 @@ Oracle = {
                     const entity = Object.create(TEntity);  // creating the object of type TEntity
                     entity.name = Utils.getStringBetweenStrings(sql_sentence, 'CREATE TABLE', '(').toUpperCase();
                     entity.pk_array = new Array();          // to store the primary key(s)
+                    entity.pf_array = new Array();          // to store the primary foreign key(s)
                     entity.fk_array = new Array();          // to store the foreign key(s)
                     entity.entity_array = new Array();      // to store the related entities
                     // END  -  Algorithm to know the ENTITY NAME of 'CREATE TABLE'
@@ -225,13 +226,15 @@ Oracle = {
                         }
                     }
 
+                    entity.description = `This is the entity ${entity.name}`;  // <== OJO == replace for real description
+
                     // storing the new entity
                     entity_full_list.push(entity);
 
 
-                    // PlantUML entities =============================================================================
-                    plantumlCode = Oracle.plantuml_entity(plantumlCode, entity.name, entity.pk_array, entity.fk_array, `this is the entity ${entity.name}`);
-                    // PlantUML entities =============================================================================
+                    // PlantUML entities =========================================================================
+                    plantumlCode = Oracle.plantuml_entity(plantumlCode, entity);
+                    // PlantUML entities =========================================================================
                 }
             }
 
