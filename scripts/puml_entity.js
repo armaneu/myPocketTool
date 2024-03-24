@@ -174,27 +174,21 @@ Oracle = {
                             
                             // START - Algorithm to know the PRIMARY KEY(s) of the entity
                             if (alter_table_key_sentence.toUpperCase().indexOf('PRIMARY KEY') > -1) {
-                                // Getting primary key(s)                    
-                                let pk = Utils.getStringBetweenStrings(alter_table_key_sentence, 'PRIMARY KEY (', ')').toUpperCase().split(',');  // split it in case there are multiple keys
-                                for (let i = 0; i < pk.length; i++) {  // removes whitespaces
-                                    entity.pk_array.push(pk[i].trim().toUpperCase());
-                                }
+                                let pk_string = Utils.getStringBetweenStrings(alter_table_key_sentence, 'PRIMARY KEY', ')').toUpperCase();
+                                let pk_array = Utils.getStringArrayBetweenComma(pk_string);
+                                pk_array.forEach(pk => {
+                                    entity.pk_array.push(pk);
+                                }); 
                             }
                             // END  -  Algorithm to know the PRIMARY KEY(s) of the entity
                             //
                             // START - Algorithm to know the FOREIGN KEY(s) of the entity
                             else if (alter_table_key_sentence.toUpperCase().indexOf('FOREIGN KEY') > -1) {
-                                // Getting foreign key(s)
-                                if (Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').indexOf(',') > -1) { // multiple foreign keys in the same ALTER TABLE sentence
-                                    let fk_multiple = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').toUpperCase().split(',');  // split it in case there are multiple keys
-                                    
-                                    for (let i = 0; i < fk_multiple.length; i++) {  // removes whitespaces
-                                        entity.fk_array.push(fk_multiple[i].trim().toUpperCase());
-                                    }
-                                } else {  // only one foreign key in the ALTER TABLE sentence
-                                    let fk_single = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY (', ')').toUpperCase();
-                                    entity.fk_array.push(fk_single.toUpperCase());
-                                }  
+                                let fk_string = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY', ')').toUpperCase();
+                                let fk_array = Utils.getStringArrayBetweenComma(fk_string);
+                                fk_array.forEach(fk => {
+                                    entity.fk_array.push(fk);
+                                }); 
                             }
                             // END  -  Algorithm to know the FOREIGN KEY(s) of the entity
                         }
@@ -275,9 +269,15 @@ Oracle = {
                 console.log(`ENTITY: ${entity.name}\n    ==>  ${entity.entity_array}`);
             });
 
+            console.log('getStringArrayBetweenComma RESULT:')
+            let arr = Utils.getStringArrayBetweenComma('( ebj_benutzerk1, ebj_datum, ebj_snr )');
+            console.log(arr);
+            arr = Utils.getStringArrayBetweenComma('( ebj_benutzerk1 )');
+            console.log(arr);
+
             return plantumlCode;
         }
-    }
+    },
 };
 
 

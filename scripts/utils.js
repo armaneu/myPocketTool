@@ -13,11 +13,21 @@ Utils = {
                 let index_next = str_sentence.toUpperCase().indexOf(str_next.toUpperCase(), index_prior);  // looking for the first ocurrence of {str_next} after the string of interest
                 
                 if (index_next > -1) {
-                    result = str_sentence.substring(index_prior, index_next).trim();
+                    result = str_sentence.substring(index_prior, index_next).replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '');  // replacing '(' , ')' and ' ' for '', just in case
                 }
             } 
         }
         
+        return result;
+    },
+
+    getStringArrayBetweenComma: function (str) {
+        let result = new Array();
+
+        if (str != null && str.length > 0) {
+            result = str.replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').split(',');  // replacing '(' , ')' and ' ' for '', just in case
+        }
+
         return result;
     }
 };
