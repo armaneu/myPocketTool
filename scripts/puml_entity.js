@@ -3,38 +3,39 @@
  */
 
 // CARDINALITY notation definition
-const _0_1_ = {notation_uml: '0..1', notation_symbol: '|o',};  // ZERO or ONE
-const _1_1_ = {notation_uml: '1..1', notation_symbol: '||',};  // Exactly ONE
-const _0_M_ = {notation_uml: '0..*', notation_symbol: '}o',};  // ZERO or MANY
-const _1_M_ = {notation_uml: '1..*', notation_symbol: '}|',};  // ONE or MANY
+const _0_1_ = {uml: '0..1', barker: '|o',};  // ZERO or ONE
+const _1_1_ = {uml: '   1', barker: '||',};  // Exactly ONE
+const _0_M_ = {uml: '0..*', barker: '}o',};  // ZERO or MANY
+const _1_M_ = {uml: '1..*', barker: '}|',};  // ONE or MANY
+
 
 /**
- * TKeyType object that defines the key type for an entity
+ * TRelation object for the relationships between entities
  */
-const TKeyType = {
-    pk: 'PK',  // PK = Primary Key
-    pf: 'PF',  // PF = Primary Foreign
-    fk: 'FK',  // FK = Foreign Key
+const TRelation = {
+    master_entity: '',
+    cardinality: '',
 };
 
-/**
- * TKey object for the key name and key type pair
- */
-const TKey = {
-    key_name: '',
-    key_type: '',
+
+const TColumn = {
+    name: '',          // column name
+    data_type: '',     // data type
+    mandatory: false,  // if column is mandatory then {true}
 };
 
 /**
  * TEntity object to represent an entity
  */
 const TEntity = {
-    name: '',                   // entity name
-    pk_array: new Array(),      // stores TKey objects of type primary key(s)
-    pf_array: new Array(),      // stores TKey objects of type primary foreign key(s)
-    fk_array: new Array(),      // stores TKey objects of type foreign key(s)
-    description: '',            // brief description of the entity
-    entity_array: new Array(),  // list of names of the source entities it is related to
+    name: '',                     // entity name
+    description: '',              // brief description of the entity
+    columns_array: new Array(),   // stores all the entity's column
+    pk_array: new Array(),        // stores the primary key(s)
+    pf_array: new Array(),        // stores the primary foreign key(s)
+    fk_array: new Array(),        // stores the foreign key(s)
+    sql_array: new Array(),       // stores CREATE TABLE, ALTER TABLE sql instructions related to the entity
+    relation_array: new Array(),  // list of names of the master entities it is related to
 };
 
 /**
@@ -88,7 +89,15 @@ Oracle = {
             if (entity.pk_array != null && Array.isArray(entity.pk_array)) {
                 for (const pk of entity.pk_array) {  // primary key(s)
                     if (pk != null && pk != '') {
-                        plantumlCode += `* ${pk}\n`;
+                        plantumlCode += `* (PK)  <color:red>*</color>  ${pk}\n`;
+                    }
+                }
+            }
+            // Setting PRIMARY FOREIGN KEY(s)
+            if (entity.pf_array != null && Array.isArray(entity.pf_array)) {
+                for (const pf of entity.pf_array) {  // primary key(s)
+                    if (pf != null && pf != '') {
+                        plantumlCode += `* (PF)  ${pf}\n`;
                     }
                 }
             }
@@ -97,7 +106,7 @@ Oracle = {
             if (entity.fk_array != null && Array.isArray(entity.fk_array)) {
                 for (const fk of entity.fk_array) {  // foreign key(s)
                     if (fk != null && fk != '') {
-                        plantumlCode += `* ${fk}\n`;
+                        plantumlCode += `* (FK)  ${fk}\n`;
                     }
                 }
             }
@@ -118,9 +127,13 @@ Oracle = {
        
         if (entity_full_list != null && Array.isArray(entity_full_list) && entity_full_list.length > 0) {
             entity_full_list.forEach(entity => {
-                if (entity.entity_array != null && Array.isArray(entity.entity_array) && entity.entity_array.length > 0) {
-                    entity.entity_array.forEach(entity_source => {
-                        plantumlCode += `${entity.name} -- ${entity_source}\n`;  // establishing the relationship
+                if (entity.relation_array != null && Array.isArray(entity.relation_array) && entity.relation_array.length > 0) {
+                    entity.relation_array.forEach(relation => {
+                        if (relation.cardinality != null && relation.cardinality != '') {
+                            plantumlCode += `${entity.name} ${relation.cardinality} ${relation.master_entity}\n`;  // establishing the relationship
+                        } else {
+                            plantumlCode += `${entity.name} -- ${relation.master_entity}\n`;  // establishing the relationship
+                        }
                     });
                 }
             });
@@ -146,7 +159,7 @@ Oracle = {
             // @startuml =============================================================================
             
 
-            let entity_full_list = new Array();        // creating a list to store all the entities that will be found
+            let entity_full_list = new Array();  // creating a list to store all the entities that will be found
             for (const sql_sentence of ddl_array) {
                 console.log(sql_sentence);
 
@@ -155,40 +168,55 @@ Oracle = {
                     sql_sentence.indexOf('(') > -1 &&                               // looking for the first occurrence of '('
                     sql_sentence.split('').reverse().join('').indexOf(')') > -1) {  // looking for the last occurrence of  ')'
                     
+                    UtilsSQL.getColumnArray(sql_sentence);
+
                     // START - Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     const entity = Object.create(TEntity);  // creating the object of type TEntity
                     entity.name = Utils.getStringBetweenStrings(sql_sentence, 'CREATE TABLE', '(').toUpperCase();
-                    entity.pk_array = new Array();          // to store the primary key(s)
-                    entity.pf_array = new Array();          // to store the primary foreign key(s)
-                    entity.fk_array = new Array();          // to store the foreign key(s)
-                    entity.entity_array = new Array();      // to store the related entities
+                    entity.description = `This is the entity ${entity.name}`;  // <== OJO == replace for real description
+                    entity.columns_array = new Array();   // to store all the entity's column
+                    entity.pk_array = new Array();        // to store the primary key(s)
+                    entity.pf_array = new Array();        // to store the primary foreign key(s)
+                    entity.fk_array = new Array();        // to store the foreign key(s)
+                    entity.sql_array = new Array();       // to store the CREATE TABLE, ALTER TABLE sql instructions
+                    const create_table_sentence = sql_sentence.split(' ').filter(word => word !== '').join(' ');  // ensure that words are separated only by whitespace
+                    entity.sql_array.push(create_table_sentence);  // storing the CREATE TABLE sql instruction
+                    entity.relation_array = new Array();  // to store the related entities
                     // END  -  Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     //
                     //
                     // START - Algorithm to know the PRIMARY KEY(s) and/or FOREIGN KEY(s) of the entity
                     for (const sql_sentence_aux of ddl_array_aux) {
                         // 'ALTER TABLE' type sentences
-                        const alter_table_key_sentence = sql_sentence_aux.split(' ').filter(word => word !== '').join(' ');  //ensure that words are separated only by whitespace
-                        if (alter_table_key_sentence.toUpperCase().indexOf(`ALTER TABLE ${entity.name} `) > -1 &&  // asking if it's a sentence of type 'ALTER TABLE'
-                            alter_table_key_sentence.toUpperCase().indexOf('DROP') < 0) {                          // making sure it's not a DROP type sentence
+                        const alter_table_sentence = sql_sentence_aux.split(' ').filter(word => word !== '').join(' ');  // ensure that words are separated only by whitespace
+                        if (alter_table_sentence.toUpperCase().indexOf(`ALTER TABLE ${entity.name} `) > -1 &&  // asking if it's a sentence of type 'ALTER TABLE'
+                            alter_table_sentence.toUpperCase().indexOf('DROP') < 0) {                          // making sure it's not a DROP type sentence
                             
+                            entity.sql_array.push(alter_table_sentence);  // storing the ALTER TABLE sql instruction
+
                             // START - Algorithm to know the PRIMARY KEY(s) of the entity
-                            if (alter_table_key_sentence.toUpperCase().indexOf('PRIMARY KEY') > -1) {
-                                let pk_string = Utils.getStringBetweenStrings(alter_table_key_sentence, 'PRIMARY KEY', ')').toUpperCase();
+                            if (alter_table_sentence.toUpperCase().indexOf('PRIMARY KEY') > -1) {
+                                let pk_string = Utils.getStringBetweenStrings(alter_table_sentence, 'PRIMARY KEY', ')').toUpperCase();
                                 let pk_array = Utils.getStringArrayBetweenComma(pk_string);
                                 pk_array.forEach(pk => {
                                     entity.pk_array.push(pk);
-                                }); 
+                                });
                             }
                             // END  -  Algorithm to know the PRIMARY KEY(s) of the entity
                             //
                             // START - Algorithm to know the FOREIGN KEY(s) of the entity
-                            else if (alter_table_key_sentence.toUpperCase().indexOf('FOREIGN KEY') > -1) {
-                                let fk_string = Utils.getStringBetweenStrings(alter_table_key_sentence, 'FOREIGN KEY', ')').toUpperCase();
+                            else if (alter_table_sentence.toUpperCase().indexOf('FOREIGN KEY') > -1) {
+                                let fk_string = Utils.getStringBetweenStrings(alter_table_sentence, 'FOREIGN KEY', ')').toUpperCase();
                                 let fk_array = Utils.getStringArrayBetweenComma(fk_string);
                                 fk_array.forEach(fk => {
                                     entity.fk_array.push(fk);
                                 }); 
+
+                                // START - Algorithm to know the relationships of the entity
+                                const relation = Object.create(TRelation);  // creating the object of type TRelation
+                                relation.master_entity = Utils.getStringBetweenStrings(sql_sentence_aux, 'REFERENCES', '(').toUpperCase();
+                                entity.relation_array.push(relation);  // to store the relationships between the entities
+                                // END   - Algorithm to know the relationships of the entity
                             }
                             // END  -  Algorithm to know the FOREIGN KEY(s) of the entity
                         }
@@ -196,33 +224,24 @@ Oracle = {
 
                     // There are some foreign key which are primary keys, in that case must identify them as:
                     // PK = Primary Key,  PF = Primary Foreign,  FK = Foreign Key
-                    let pk_length = entity.pk_array.length, fk_length = entity.fk_array.length;
-                    let key_type = '';  // possible values: (PK), (FK), (PF)           
-                    
+                    let pk_length = entity.pk_array.length, fk_length = entity.fk_array.length;                    
                     for (let i = 0; i < pk_length; i++) {
-                        key_type = '(PK)';
                         for (let j = 0; j < fk_length; j++) {
-                            if (entity.pk_array[i] == entity.fk_array[j]) {
-                                key_type = '(PF)';  // it is a Primary Foreign key (PF)
-                                entity.pk_array[i] = `${key_type}  ${entity.pk_array[i]}`;  // to indicate it is a Primary Foreign key (PF)
-                                entity.fk_array[j] = '';  // to avoid showing duplicate value
+                            if ((entity.pk_array[i] != '' && entity.fk_array[j] != '') && (entity.pk_array[i] == entity.fk_array[j])) {
+                                entity.pf_array.push(entity.fk_array[j]);  // assigning to the array for primary foreign keys
+                                
+                                entity.pk_array.splice(i, 1);  // to avoid showing duplicate value
+                                pk_length--;  // decrementing {length} in one
+                                i--;          // decrementing index {i} in one
+                                entity.fk_array.splice(j, 1);  // to avoid showing duplicate value
+                                fk_length--;  // decrementing {length} in one
+                                j--;          // decrementing index {j} in one
                             }
                         }
-                        // To indicate it is a Primary Key (PK)
-                        if (key_type == '(PK)') {
-                            entity.pk_array[i] = `${key_type}  ${entity.pk_array[i]}`;
-                        }
                     }
-                    // To indicate it is a Foreign Key (FK)
-                    for (let k = 0; k < fk_length; k++) {
-                        if (entity.fk_array[k] != null && entity.fk_array[k] != '') {
-                            entity.fk_array[k] = `(FK)  ${entity.fk_array[k]}`;
-                        }
-                    }
+                    
 
-                    entity.description = `This is the entity ${entity.name}`;  // <== OJO == replace for real description
-
-                    // storing the new entity
+                    // Storing the new entity
                     entity_full_list.push(entity);
 
 
@@ -233,23 +252,10 @@ Oracle = {
             }
 
 
-            // START - Algorithm to know the RELATIONSHIPS between entities
-            entity_full_list.forEach(entity => {
-                for (const sql_sentence_aux of ddl_array_aux) {
-                    if (sql_sentence_aux.toUpperCase().indexOf(`ALTER TABLE ${entity.name} `) > -1 &&  // asking if it's a sentence of type 'ALTER TABLE'
-                        sql_sentence_aux.toUpperCase().indexOf('DROP') < 0 &&                          // making sure it's not a DROP type sentence
-                        sql_sentence_aux.toUpperCase().indexOf('REFERENCES') > -1 ) {                  // asking if the sentence has the 'REFERENCES' SQL keyword
-                            entity.entity_array.push(Utils.getStringBetweenStrings(sql_sentence_aux, 'REFERENCES', '(').toUpperCase());  // to store the relationships between the entities
-                    }
-                }
-            });
-            // END  -  Algorithm to know the RELATIONSHIPS between entities
-            //
-            //
             // START - Algorithm to know the CARDINALITIES between entities
             entity_full_list.forEach(entity => {
-                if (entity.pk_array.length == 1 && entity.fk_array.length == 0 && entity.entity_array.length == 1) {
-
+                if (entity.pk_array.length == 0 && entity.pf_array.length == 1 && entity.fk_array.length == 0 && entity.relation_array.length == 1) {
+                    entity.relation_array[0].cardinality = `"${_1_1_.uml}" -- "${_1_1_.uml}"`;
                 }
             });
             // END  -  Algorithm to know the CARDINALITIES between entities
@@ -264,9 +270,19 @@ Oracle = {
             plantumlCode = Oracle.plantuml_end(plantumlCode);  // ending the definition of PlantUML syntax
             // @enduml ===================================================================================
 
+
+
+
+
+
+            // CONSOLE LOGS FOR TESTING
             entity_full_list.forEach(entity => {
                 console.log(`ENTITY count: ${entity_full_list.length}\n\n`);
-                console.log(`ENTITY: ${entity.name}\n    ==>  ${entity.entity_array}`);
+                console.log(`ENTITY: ${entity.name}\n    ==>  ${entity.relation_array}`);
+                
+                entity.sql_array.forEach(sql => {
+                    console.log(`SQL: ${sql}`);
+                });
             });
 
             console.log('getStringArrayBetweenComma RESULT:')
@@ -274,6 +290,10 @@ Oracle = {
             console.log(arr);
             arr = Utils.getStringArrayBetweenComma('( ebj_benutzerk1 )');
             console.log(arr);
+
+
+
+
 
             return plantumlCode;
         }
