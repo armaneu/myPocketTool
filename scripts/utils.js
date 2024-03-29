@@ -48,12 +48,10 @@ UtilsSQL = {
                 if (str_aux.charAt(index) == ',') {                                       // loking for the comma used as separator
                     str_search = str_aux.substring(indexStart, index).trim();             // taking a portion of the string {str_aux} to analize it
                     if (str_search.includes('(') && str_search.includes(')')) {           // if there are opening and closing parenthesis
-                        ////console.log('str_search IF { () } ==> ' + str_search);
                         result.push(str_search);
                         index++;
                         indexStart = index;
                     } else if (!str_search.includes('(') && !str_search.includes(')')) {  // if there are no opening and closing parenthesis
-                        ////console.log('str_search ELSE IF { !() } ==> ' + str_search);
                         result.push(str_search);
                         index++;
                         indexStart = index;
@@ -61,15 +59,9 @@ UtilsSQL = {
                 } else if ((index + 1) == str_aux.length && str_search.includes('(') && str_search.includes(')')) {
                     str_search = str_aux.substring(indexStart, index + 1).trim();         // taking the last portion of the string {str_aux}
                     result.push(str_search);
-                    ////console.log('str_search FINAL  ==> ' + str_search + '\n');
                 }
-                
-                ////console.log(`COMMA counter: ${indexStart}`);
             }
-            
-            console.log('str_aux ==> ' + str_aux + '\n');
         }
-        console.log('RESULT ==> ' + result + '\n');
 
         return result;
     }
