@@ -44,11 +44,36 @@ const TEntity = {
 
 UtilsSQL = {
 
+    getColumnData: function (str) {
+        let column = Object.create(TColumn);  // creating the object of type TColumn
+
+        let str_aux = str.split(' ').filter(word => word !== '').join(' ');  // ensuring that words are separated only by one whitespace
+        let indexFirstBlankSpace = str_aux.indexOf(' ');                     // index of the first whitespace { }
+        let indexNOTNULL = str_aux.toUpperCase().indexOf('NOT NULL');        // index of the {NOL NULL}
+        if (indexFirstBlankSpace > 0) {
+            // name: from the zero-index to the index of the first whitespace { }
+            column.name = str_aux.toUpperCase().substring(0, indexFirstBlankSpace).trim();
+        }
+        if (indexFirstBlankSpace < indexNOTNULL) {
+            // data type: from the index of the first whitespace to the index of {NOL NULL}
+            column.data_type = str_aux.toUpperCase().substring(indexFirstBlankSpace, indexNOTNULL).trim();
+            // mandatory: then is {true}
+            column.mandatory = true;
+        } else {
+            // data type: from the index of the first whitespace to the index of {NOL NULL}
+            column.data_type = str_aux.toUpperCase().substring(indexFirstBlankSpace, str_aux.length).trim();
+            // mandatory: then is {false}
+            column.mandatory = false;
+        }
+
+        return column;
+    },
+
     getColumnArray: function (str) {
         let result = new Array();
 
         if (str != null && str.length > 0 && str.toUpperCase().indexOf('CREATE TABLE') > -1) {
-            let str_aux = str.split(' ').filter(word => word !== '').join(' ');  // ensure that words are separated only by whitespace
+            let str_aux = str.split(' ').filter(word => word !== '').join(' ');  // ensuring that words are separated only by one whitespace
             str_aux = str_aux.replace(/\n|\r|\t/g, ' ').substring(str_aux.indexOf('(') + 1, str_aux.length - 1).trim();  // no including of opening 'and closing parenthesis
             
             let str_search = '';
@@ -58,17 +83,20 @@ UtilsSQL = {
                 if (str_aux.charAt(index) == ',') {                                       // loking for the comma used as separator
                     str_search = str_aux.substring(indexStart, index).trim();             // taking a portion of the string {str_aux} to analize it
                     if (str_search.includes('(') && str_search.includes(')')) {           // if there are opening and closing parenthesis
-                        result.push(str_search);
+                        const column = UtilsSQL.getColumnData(str_search);  // getting the object of type TColumn
+                        result.push(column);
                         index++;
                         indexStart = index;
                     } else if (!str_search.includes('(') && !str_search.includes(')')) {  // if there are no opening and closing parenthesis
-                        result.push(str_search);
+                        const column = UtilsSQL.getColumnData(str_search);  // getting the object of type TColumn
+                        result.push(column);
                         index++;
                         indexStart = index;
                     }
                 } else if ((index + 1) == str_aux.length && str_search.includes('(') && str_search.includes(')')) {
                     str_search = str_aux.substring(indexStart, index + 1).trim();         // taking the last portion of the string {str_aux}
-                    result.push(str_search);
+                    const column = UtilsSQL.getColumnData(str_search);  // getting the object of type TColumn
+                    result.push(column);
                 }
             }
         }

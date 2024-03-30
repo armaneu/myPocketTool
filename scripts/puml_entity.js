@@ -140,7 +140,11 @@ Oracle = {
                     const create_table_sentence = sql_sentence.split(' ').filter(word => word !== '').join(' ');  // ensure that words are separated only by whitespace
                     entity.sql_array.push(create_table_sentence);  // storing the CREATE TABLE sql instruction
                     entity.relation_array = new Array();  // to store the related entities
-                    console.log(`entity.columns_array ==> ${entity.columns_array}\n`);
+
+
+                    entity.columns_array.forEach(column => {
+                        console.log(`TColumn ==> ${column.name} | ${column.data_type} | ${column.mandatory}`);
+                    });
                     // END  -  Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     //
                     //
