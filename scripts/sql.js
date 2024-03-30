@@ -17,7 +17,9 @@ const TRelation = {
     cardinality: '',
 };
 
-
+/**
+ * TColumn object to store name, data type and if is it mandatory or not
+ */
 const TColumn = {
     name: '',          // column name
     data_type: '',     // data type
@@ -95,7 +97,7 @@ UtilsSQL = {
                     }
                 } else if ((index + 1) == str_aux.length && str_search.includes('(') && str_search.includes(')')) {
                     str_search = str_aux.substring(indexStart, index + 1).trim();         // taking the last portion of the string {str_aux}
-                    const column = UtilsSQL.getColumnData(str_search);  // getting the object of type TColumn
+                    const column = UtilsSQL.getColumnData(str_search);     // getting the object of type TColumn
                     result.push(column);
                 }
             }
