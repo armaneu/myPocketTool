@@ -1,0 +1,78 @@
+/**
+ * This file contents all functionalities and definitions related to SQL DDL to PlantUML conversion
+ */
+
+// CARDINALITY notation definition
+const _0_1_ = {uml: '0..1', barker: '|o',};  // ZERO or ONE
+const _1_1_ = {uml: '   1', barker: '||',};  // Exactly ONE
+const _0_M_ = {uml: '0..*', barker: '}o',};  // ZERO or MANY
+const _1_M_ = {uml: '1..*', barker: '}|',};  // ONE or MANY
+
+
+/**
+ * TRelation object for the relationships between entities
+ */
+const TRelation = {
+    master_entity: '',
+    cardinality: '',
+};
+
+
+const TColumn = {
+    name: '',          // column name
+    data_type: '',     // data type
+    mandatory: false,  // if column is mandatory then {true}
+};
+
+/**
+ * TEntity object to represent an entity
+ */
+const TEntity = {
+    name: '',                     // entity name
+    description: '',              // brief description of the entity
+    columns_array: new Array(),   // stores all the entity's column
+    pk_array: new Array(),        // stores the primary key(s)
+    pf_array: new Array(),        // stores the primary foreign key(s)
+    fk_array: new Array(),        // stores the foreign key(s)
+    sql_array: new Array(),       // stores CREATE TABLE, ALTER TABLE sql instructions related to the entity
+    relation_array: new Array(),  // list of names of the master entities it is related to
+};
+
+
+
+
+
+UtilsSQL = {
+
+    getColumnArray: function (str) {
+        let result = new Array();
+
+        if (str != null && str.length > 0 && str.toUpperCase().indexOf('CREATE TABLE') > -1) {
+            let str_aux = str.split(' ').filter(word => word !== '').join(' ');  // ensure that words are separated only by whitespace
+            str_aux = str_aux.replace(/\n|\r|\t/g, ' ').substring(str_aux.indexOf('(') + 1, str_aux.length - 1).trim();  // no including of opening 'and closing parenthesis
+            
+            let str_search = '';
+            let indexStart = 0, indexEnd = 0;
+            let separator = false;
+            for (let index = 0; index < str_aux.length; index++) {
+                if (str_aux.charAt(index) == ',') {                                       // loking for the comma used as separator
+                    str_search = str_aux.substring(indexStart, index).trim();             // taking a portion of the string {str_aux} to analize it
+                    if (str_search.includes('(') && str_search.includes(')')) {           // if there are opening and closing parenthesis
+                        result.push(str_search);
+                        index++;
+                        indexStart = index;
+                    } else if (!str_search.includes('(') && !str_search.includes(')')) {  // if there are no opening and closing parenthesis
+                        result.push(str_search);
+                        index++;
+                        indexStart = index;
+                    }
+                } else if ((index + 1) == str_aux.length && str_search.includes('(') && str_search.includes(')')) {
+                    str_search = str_aux.substring(indexStart, index + 1).trim();         // taking the last portion of the string {str_aux}
+                    result.push(str_search);
+                }
+            }
+        }
+
+        return result;
+    }
+};

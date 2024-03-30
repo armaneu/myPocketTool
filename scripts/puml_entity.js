@@ -1,44 +1,4 @@
 /**
- * This file contents all functionalities and definitions related to SQL DDL to PlantUML conversion
- */
-
-// CARDINALITY notation definition
-const _0_1_ = {uml: '0..1', barker: '|o',};  // ZERO or ONE
-const _1_1_ = {uml: '   1', barker: '||',};  // Exactly ONE
-const _0_M_ = {uml: '0..*', barker: '}o',};  // ZERO or MANY
-const _1_M_ = {uml: '1..*', barker: '}|',};  // ONE or MANY
-
-
-/**
- * TRelation object for the relationships between entities
- */
-const TRelation = {
-    master_entity: '',
-    cardinality: '',
-};
-
-
-const TColumn = {
-    name: '',          // column name
-    data_type: '',     // data type
-    mandatory: false,  // if column is mandatory then {true}
-};
-
-/**
- * TEntity object to represent an entity
- */
-const TEntity = {
-    name: '',                     // entity name
-    description: '',              // brief description of the entity
-    columns_array: new Array(),   // stores all the entity's column
-    pk_array: new Array(),        // stores the primary key(s)
-    pf_array: new Array(),        // stores the primary foreign key(s)
-    fk_array: new Array(),        // stores the foreign key(s)
-    sql_array: new Array(),       // stores CREATE TABLE, ALTER TABLE sql instructions related to the entity
-    relation_array: new Array(),  // list of names of the master entities it is related to
-};
-
-/**
  * 'Namespace' of methods for Oracle database
  */
 Oracle = {
@@ -168,13 +128,11 @@ Oracle = {
                     sql_sentence.indexOf('(') > -1 &&                               // looking for the first occurrence of '('
                     sql_sentence.split('').reverse().join('').indexOf(')') > -1) {  // looking for the last occurrence of  ')'
                     
-                    UtilsSQL.getColumnArray(sql_sentence);
-
                     // START - Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     const entity = Object.create(TEntity);  // creating the object of type TEntity
                     entity.name = Utils.getStringBetweenStrings(sql_sentence, 'CREATE TABLE', '(').toUpperCase();
                     entity.description = `This is the entity ${entity.name}`;  // <== OJO == replace for real description
-                    entity.columns_array = new Array();   // to store all the entity's column
+                    entity.columns_array = UtilsSQL.getColumnArray(sql_sentence);  // to store all the entity's column
                     entity.pk_array = new Array();        // to store the primary key(s)
                     entity.pf_array = new Array();        // to store the primary foreign key(s)
                     entity.fk_array = new Array();        // to store the foreign key(s)
@@ -182,6 +140,7 @@ Oracle = {
                     const create_table_sentence = sql_sentence.split(' ').filter(word => word !== '').join(' ');  // ensure that words are separated only by whitespace
                     entity.sql_array.push(create_table_sentence);  // storing the CREATE TABLE sql instruction
                     entity.relation_array = new Array();  // to store the related entities
+                    console.log(`entity.columns_array ==> ${entity.columns_array}\n`);
                     // END  -  Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     //
                     //

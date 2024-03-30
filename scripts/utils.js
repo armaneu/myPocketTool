@@ -31,38 +31,3 @@ Utils = {
         return result;
     }
 };
-
-UtilsSQL = {
-
-    getColumnArray: function (str) {
-        let result = new Array();
-
-        if (str != null && str.length > 0 && str.toUpperCase().indexOf('CREATE TABLE') > -1) {
-            let str_aux = str.split(' ').filter(word => word !== '').join(' ');  // ensure that words are separated only by whitespace
-            str_aux = str_aux.replace(/\n|\r|\t/g, ' ').substring(str_aux.indexOf('(') + 1, str_aux.length - 1).trim();  // no including of opening 'and closing parenthesis
-            
-            let str_search = '';
-            let indexStart = 0, indexEnd = 0;
-            let separator = false;
-            for (let index = 0; index < str_aux.length; index++) {
-                if (str_aux.charAt(index) == ',') {                                       // loking for the comma used as separator
-                    str_search = str_aux.substring(indexStart, index).trim();             // taking a portion of the string {str_aux} to analize it
-                    if (str_search.includes('(') && str_search.includes(')')) {           // if there are opening and closing parenthesis
-                        result.push(str_search);
-                        index++;
-                        indexStart = index;
-                    } else if (!str_search.includes('(') && !str_search.includes(')')) {  // if there are no opening and closing parenthesis
-                        result.push(str_search);
-                        index++;
-                        indexStart = index;
-                    }
-                } else if ((index + 1) == str_aux.length && str_search.includes('(') && str_search.includes(')')) {
-                    str_search = str_aux.substring(indexStart, index + 1).trim();         // taking the last portion of the string {str_aux}
-                    result.push(str_search);
-                }
-            }
-        }
-
-        return result;
-    }
-};
