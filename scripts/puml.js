@@ -49,7 +49,11 @@ Oracle = {
             if (entity.pk_array != null && Array.isArray(entity.pk_array)) {
                 for (const pk of entity.pk_array) {  // primary key(s)
                     if (pk != null && pk != '') {
-                        plantumlCode += `* (PK)  <color:red>*</color>  ${pk}\n`;
+                        if (UtilsSQL.isMandatory(pk, entity.columns_array)) {
+                            plantumlCode += `* (PK)  <color:red>*</color>  ${pk}\n`;
+                        } else {
+                            plantumlCode += `* (PK)  ${pk}\n`;
+                        }
                     }
                 }
             }
@@ -57,7 +61,11 @@ Oracle = {
             if (entity.pf_array != null && Array.isArray(entity.pf_array)) {
                 for (const pf of entity.pf_array) {  // primary key(s)
                     if (pf != null && pf != '') {
-                        plantumlCode += `* (PF)  ${pf}\n`;
+                        if (UtilsSQL.isMandatory(pf, entity.columns_array)) {
+                            plantumlCode += `* (PF)  <color:red>*</color>  ${pf}\n`;
+                        } else {
+                            plantumlCode += `* (PF)  ${pf}\n`;
+                        }
                     }
                 }
             }
@@ -66,7 +74,11 @@ Oracle = {
             if (entity.fk_array != null && Array.isArray(entity.fk_array)) {
                 for (const fk of entity.fk_array) {  // foreign key(s)
                     if (fk != null && fk != '') {
-                        plantumlCode += `* (FK)  ${fk}\n`;
+                        if (UtilsSQL.isMandatory(fk, entity.columns_array)) {
+                            plantumlCode += `* (FK)  <color:red>*</color>  ${fk}\n`;
+                        } else {
+                            plantumlCode += `* (FK)  ${fk}\n`;
+                        }
                     }
                 }
             }

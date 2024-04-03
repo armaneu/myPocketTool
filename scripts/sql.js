@@ -71,6 +71,7 @@ UtilsSQL = {
         return column;
     },
 
+    
     getColumnArray: function (str) {
         let result = new Array();
 
@@ -97,12 +98,33 @@ UtilsSQL = {
                     }
                 } else if ((index + 1) == str_aux.length && str_search.includes('(') && str_search.includes(')')) {
                     str_search = str_aux.substring(indexStart, index + 1).trim();         // taking the last portion of the string {str_aux}
-                    const column = UtilsSQL.getColumnData(str_search);     // getting the object of type TColumn
+                    const column = UtilsSQL.getColumnData(str_search);      // getting the object of type TColumn
                     result.push(column);
                 }
             }
         }
 
         return result;
-    }
+    },
+
+    /**
+     * This method allows to know if certain column is mandatory or not
+     * @param {*} column_name name of the column to find
+     * @param {*} columns_array array of data type TColumn to search for
+     * @returns true if the column is mandatory otherwise an false
+     */
+    isMandatory: function (column_name, columns_array) {
+        let result = false;
+
+        if (column_name != null && column_name.length > 0 && Array.isArray(columns_array)) {
+            for (let index = 0; index < columns_array.length; index++) {
+                if (columns_array[index].name == column_name && columns_array[index].mandatory == true) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    },
 };
