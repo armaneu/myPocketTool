@@ -8,7 +8,7 @@ function generateDiagram() {
     document.getElementById('UML').value = plantumlCode;
     console.log(plantumlCode);
 
-    let url = 'http://127.0.0.1:8000/plantuml/png/' + textEncoding(plantumlCode);
+    let url = 'http://127.0.0.1:8000/plantuml/svg/' + textEncoding(plantumlCode);
     document.getElementById('iframe_diagram').src = url;
 }
 

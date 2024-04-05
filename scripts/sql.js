@@ -9,12 +9,19 @@ const _0_M_ = {uml: '0..*', barker: '}o',};  // ZERO or MANY
 const _1_M_ = {uml: '1..*', barker: '}|',};  // ONE or MANY
 
 
+
+const TKeyMasterSlave = {
+    key_master: '',  // the key name of the master entity
+    key_slave: '',   // the key name of the slave entity
+};
+
 /**
  * TRelation object for the relationships between entities
  */
 const TRelation = {
-    master_entity: '',
-    cardinality: '',
+    master_entity_name: '',  // the name of the entity from which it takes the keys
+    cardinality: '',         // cardinality between the master entity and the current entity
+    keys_master_slave_array: new Array(),  // stores all master-slave key pairs of the entity
 };
 
 /**
@@ -127,4 +134,105 @@ UtilsSQL = {
 
         return result;
     },
+
+
+    getCardinalities: function (entity_full_list) {
+        let result_array = entity_full_list;
+        
+        if (Array.isArray(result_array)) {
+            result_array.forEach(entity => {
+                if (entity.relation_array.length > 0) {  // asking if this entity has a relationship with another entity (the master one)
+                    // CASE Relation  { 1 -- 1 }    { 0..1 -- 0..1 }  -  (master's PK is PF in this entity)
+                    if (entity.pk_array.length == 0 && entity.pf_array.length > 0 && entity.fk_array.length == 0) {
+                        // Ensuring if the PF is from the master entity
+                        entity.pf_array.forEach(key_slave => {
+                            entity.relation_array.forEach(relation => {
+                                relation.keys_master_slave_array.forEach(key_master_slave_pair => {
+                                    if (key_slave == key_master_slave_pair.key_slave) {  //  <== ensuring if the PF is from master entity
+                                        if (UtilsSQL.isMandatory(key_slave, entity.columns_array)) {
+                                            relation.cardinality = `"${_1_1_.uml}" -- "${_1_1_.uml}"`;
+                                        } else {
+                                            relation.cardinality = `"${_0_1_.uml}" -- "${_0_1_.uml}"`;
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    } else if (entity.pk_array.length == 0 && entity.pf_array.length == 0 && entity.fk_array.length > 0) {
+                        // Ensuring if the FK is from the master entity
+                        entity.fk_array.forEach(key_slave => {
+                            entity.relation_array.forEach(relation => {
+                                relation.keys_master_slave_array.forEach(key_master_slave_pair => {
+                                    if (key_slave == key_master_slave_pair.key_slave) {  //  <== ensuring if the FK is from master entity
+                                        if (UtilsSQL.isMandatory(key_slave, entity.columns_array)) {
+                                            relation.cardinality = `"${_1_M_.uml}" -- "${_1_1_.uml}"`;
+                                        } else {
+                                            relation.cardinality = `"${_0_M_.uml}" -- "${_0_1_.uml}"`;
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    } else if (entity.pk_array.length > 0 && entity.pf_array.length == 0 && entity.fk_array.length > 0) {
+                        // Ensuring if the FK is from the master entity
+                        entity.fk_array.forEach(key_slave => {
+                            entity.relation_array.forEach(relation => {
+                                relation.keys_master_slave_array.forEach(key_master_slave_pair => {
+                                    if (key_slave == key_master_slave_pair.key_slave) {  //  <== ensuring if the FK is from master entity
+                                        if (UtilsSQL.isMandatory(key_slave, entity.columns_array)) {
+                                            relation.cardinality = `"${_0_M_.uml}" -- "${_1_1_.uml}"`;
+                                        } else {
+                                            relation.cardinality = `"${_0_M_.uml}" -- "${_0_1_.uml}"`;
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    }
+                }
+                
+                
+            });
+        }
+
+        return result_array;
+    }
 };
+
+
+
+
+/*  ||        KEYS        ||        RELATIONSHIP & CARDINALITY         ||  */
+/*  ||------|------|------||---------------------|---------------------||  */
+/*  ||  PK  |  PF  |  FK  ||                  MANDATORY                ||  */
+/*  ||======|======|======||=====================|=====================||  */
+/*  ||  0   |  *   |  0   ||         YES         |          NO         ||  */
+/*  ----------------------||---------------------|---------------------||  */
+/*                        ||  slave  --  master  |  slave  --  master  ||  */
+/*                        ||=====================|=====================||  */
+/*                        ||  _1_1_  --  _1_1_   |  _0_1_  --  _0_1_   ||  */
+/*                        -----------------------------------------------  */
+
+
+/*  ||        KEYS        ||        RELATIONSHIP & CARDINALITY         ||  */
+/*  ||------|------|------||---------------------|---------------------||  */
+/*  ||  PK  |  PF  |  FK  ||                  MANDATORY                ||  */
+/*  ||======|======|======||=====================|=====================||  */
+/*  ||  0   |  0   |  *   ||         YES         |          NO         ||  */
+/*  ----------------------||---------------------|---------------------||  */
+/*                        ||  slave  --  master  |  slave  --  master  ||  */
+/*                        ||=====================|=====================||  */
+/*                        ||  _1_M_  --  _1_1_   |  _0_M_  --  _0_1_   ||  */
+/*                        -----------------------------------------------  */
+
+
+/*  ||        KEYS        ||        RELATIONSHIP & CARDINALITY         ||  */
+/*  ||------|------|------||---------------------|---------------------||  */
+/*  ||  PK  |  PF  |  FK  ||                  MANDATORY                ||  */
+/*  ||======|======|======||=====================|=====================||  */
+/*  ||  *   |  0   |  *   ||         YES         |          NO         ||  */
+/*  ----------------------||---------------------|---------------------||  */
+/*                        ||  slave  --  master  |  slave  --  master  ||  */
+/*                        ||=====================|=====================||  */
+/*                        ||  _0_M_  --  _1_1_   |  _0_M_  --  _0_1_   ||  */
+/*                        -----------------------------------------------  */

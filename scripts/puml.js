@@ -52,7 +52,7 @@ Oracle = {
                         if (UtilsSQL.isMandatory(pk, entity.columns_array)) {
                             plantumlCode += `* (PK)  <color:red>*</color>  ${pk}\n`;
                         } else {
-                            plantumlCode += `* (PK)  ${pk}\n`;
+                            plantumlCode += `* (PK)     ${pk}\n`;
                         }
                     }
                 }
@@ -64,7 +64,7 @@ Oracle = {
                         if (UtilsSQL.isMandatory(pf, entity.columns_array)) {
                             plantumlCode += `* (PF)  <color:red>*</color>  ${pf}\n`;
                         } else {
-                            plantumlCode += `* (PF)  ${pf}\n`;
+                            plantumlCode += `* (PF)     ${pf}\n`;
                         }
                     }
                 }
@@ -77,7 +77,7 @@ Oracle = {
                         if (UtilsSQL.isMandatory(fk, entity.columns_array)) {
                             plantumlCode += `* (FK)  <color:red>*</color>  ${fk}\n`;
                         } else {
-                            plantumlCode += `* (FK)  ${fk}\n`;
+                            plantumlCode += `* (FK)     ${fk}\n`;
                         }
                     }
                 }
@@ -102,9 +102,9 @@ Oracle = {
                 if (entity.relation_array != null && Array.isArray(entity.relation_array) && entity.relation_array.length > 0) {
                     entity.relation_array.forEach(relation => {
                         if (relation.cardinality != null && relation.cardinality != '') {
-                            plantumlCode += `${entity.name} ${relation.cardinality} ${relation.master_entity}\n`;  // establishing the relationship
+                            plantumlCode += `${entity.name} ${relation.cardinality} ${relation.master_entity_name}\n`;  // establishing the relationship
                         } else {
-                            plantumlCode += `${entity.name} -- ${relation.master_entity}\n`;  // establishing the relationship
+                            plantumlCode += `${entity.name} -- ${relation.master_entity_name}\n`;  // establishing the relationship
                         }
                     });
                 }
@@ -143,7 +143,8 @@ Oracle = {
                     // START - Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     const entity = Object.create(TEntity);  // creating the object of type TEntity
                     entity.name = Utils.getStringBetweenStrings(sql_sentence, 'CREATE TABLE', '(').toUpperCase();
-                    entity.description = `This is the entity ${entity.name}`;  // <== OJO == replace for real description
+                    ////entity.description = `This is the entity ${entity.name}`;  // <== OJO == replace for real description
+                    entity.description = `[[http://plantuml.com{click for more details} This is the entity ${entity.name}]]`;  // <== OJO == replace for real description
                     entity.columns_array = UtilsSQL.getColumnArray(sql_sentence);  // to store all the entity's column
                     entity.pk_array = new Array();        // to store the primary key(s)
                     entity.pf_array = new Array();        // to store the primary foreign key(s)
@@ -189,8 +190,13 @@ Oracle = {
 
                                 // START - Algorithm to know the relationships of the entity
                                 const relation = Object.create(TRelation);  // creating the object of type TRelation
-                                relation.master_entity = Utils.getStringBetweenStrings(sql_sentence_aux, 'REFERENCES', '(').toUpperCase();
-                                entity.relation_array.push(relation);  // to store the relationships between the entities
+                                relation.master_entity_name = Utils.getStringBetweenStrings(sql_sentence_aux, 'REFERENCES', '(').toUpperCase();
+                                let key_master_slave = Object.create(TKeyMasterSlave);    // creating the object of type TKeyMasterSlave to store the key pair
+                                key_master_slave.key_master = Utils.getStringBetweenStrings(sql_sentence_aux, `REFERENCES ${relation.master_entity_name} (`, ')').toUpperCase();
+                                key_master_slave.key_slave  = Utils.getStringBetweenStrings(sql_sentence_aux, 'FOREIGN KEY', ')').toUpperCase();
+                                relation.keys_master_slave_array = new Array();
+                                relation.keys_master_slave_array.push(key_master_slave);  // stores all master-slave key pairs between the entity
+                                entity.relation_array.push(relation);                     // to store the relationships between the entities
                                 // END   - Algorithm to know the relationships of the entity
                             }
                             // END  -  Algorithm to know the FOREIGN KEY(s) of the entity
@@ -227,17 +233,12 @@ Oracle = {
             }
 
 
-            // START - Algorithm to know the CARDINALITIES between entities
-            entity_full_list.forEach(entity => {
-                if (entity.pk_array.length == 0 && entity.pf_array.length == 1 && entity.fk_array.length == 0 && entity.relation_array.length == 1) {
-                    entity.relation_array[0].cardinality = `"${_1_1_.uml}" -- "${_1_1_.uml}"`;
-                }
-            });
-            // END  -  Algorithm to know the CARDINALITIES between entities
+            // Knowing the cardinalities among the entities
+            let cardinalities = UtilsSQL.getCardinalities(entity_full_list);
 
 
             // PlantUML relationships ====================================================================
-            plantumlCode = Oracle.plantuml_relationship(plantumlCode, entity_full_list);
+            plantumlCode = Oracle.plantuml_relationship(plantumlCode, cardinalities);
             // PlantUML relationships ====================================================================
             
 
