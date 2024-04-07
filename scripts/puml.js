@@ -42,6 +42,11 @@ Oracle = {
     plantuml_entity: function(puml_code, entity) {
         let plantumlCode = puml_code;
 
+        const _PK_ = '<color:blue>PK</color>';
+        const _PF_ = '<color:blue>PF</color>';
+        const mandatory = '<color:red>*</color>';  // to show a red asterisk
+        const whitespace_1 = '<U+00A0>';           // to preserve a whitespace (NO-BREAK SPACE)
+        const separator = '--\n';
         if (entity.name != null && entity.name.length > 0) {
             // Setting the ENTITY NAME
             plantumlCode += `entity ${entity.name} {\n`;  // entity name
@@ -50,9 +55,9 @@ Oracle = {
                 for (const pk of entity.pk_array) {  // primary key(s)
                     if (pk != null && pk != '') {
                         if (UtilsSQL.isMandatory(pk, entity.columns_array)) {
-                            plantumlCode += `* (PK)  <color:red>*</color>  ${pk}\n`;
+                            plantumlCode += `${_PK_} ${mandatory} ${pk}\n`;
                         } else {
-                            plantumlCode += `* (PK)     ${pk}\n`;
+                            plantumlCode += `${_PK_}  ${whitespace_1}  ${pk}\n`;
                         }
                     }
                 }
@@ -62,27 +67,27 @@ Oracle = {
                 for (const pf of entity.pf_array) {  // primary key(s)
                     if (pf != null && pf != '') {
                         if (UtilsSQL.isMandatory(pf, entity.columns_array)) {
-                            plantumlCode += `* (PF)  <color:red>*</color>  ${pf}\n`;
+                            plantumlCode += `${_PF_} ${mandatory} ${pf}\n`;
                         } else {
-                            plantumlCode += `* (PF)     ${pf}\n`;
+                            plantumlCode += `${_PF_}  ${whitespace_1}  ${pf}\n`;
                         }
                     }
                 }
             }
-            plantumlCode += '--\n';  // separator
+            plantumlCode += `${separator}`;  // separator
             // Setting FOREIGN KEY(s)
             if (entity.fk_array != null && Array.isArray(entity.fk_array)) {
                 for (const fk of entity.fk_array) {  // foreign key(s)
                     if (fk != null && fk != '') {
                         if (UtilsSQL.isMandatory(fk, entity.columns_array)) {
-                            plantumlCode += `* (FK)  <color:red>*</color>  ${fk}\n`;
+                            plantumlCode += `FK ${mandatory} ${fk}\n`;
                         } else {
-                            plantumlCode += `* (FK)     ${fk}\n`;
+                            plantumlCode += `FK  ${whitespace_1}  ${fk}\n`;
                         }
                     }
                 }
             }
-            plantumlCode += '--\n';  // separator
+            plantumlCode += `${separator}`;  // separator
             // Setting Description
             if (entity.description != null && entity.description.length > 0) {  // entity description
                 plantumlCode += `${entity.description}\n`;
