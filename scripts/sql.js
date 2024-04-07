@@ -158,6 +158,21 @@ UtilsSQL = {
                                 });
                             });
                         });
+                    } if (entity.pk_array.length > 0 && entity.pf_array.length > 0 && entity.fk_array.length == 0) {
+                        // Ensuring if the PF is from the master entity
+                        entity.pf_array.forEach(key_slave => {
+                            entity.relation_array.forEach(relation => {
+                                relation.keys_master_slave_array.forEach(key_master_slave_pair => {
+                                    if (key_slave == key_master_slave_pair.key_slave) {  //  <== ensuring if the PF is from master entity
+                                        if (UtilsSQL.isMandatory(key_slave, entity.columns_array)) {
+                                            relation.cardinality = `"${_1_M_.uml}" -- "${_1_1_.uml}"`;
+                                        } else {
+                                            relation.cardinality = `"${_0_M_.uml}" -- "${_0_1_.uml}"`;
+                                        }
+                                    }
+                                });
+                            });
+                        });
                     } else if (entity.pk_array.length == 0 && entity.pf_array.length == 0 && entity.fk_array.length > 0) {
                         // Ensuring if the FK is from the master entity
                         entity.fk_array.forEach(key_slave => {
@@ -235,4 +250,16 @@ UtilsSQL = {
 /*                        ||  slave  --  master  |  slave  --  master  ||  */
 /*                        ||=====================|=====================||  */
 /*                        ||  _0_M_  --  _1_1_   |  _0_M_  --  _0_1_   ||  */
+/*                        -----------------------------------------------  */
+
+
+/*  ||        KEYS        ||        RELATIONSHIP & CARDINALITY         ||  */
+/*  ||------|------|------||---------------------|---------------------||  */
+/*  ||  PK  |  PF  |  FK  ||                  MANDATORY                ||  */
+/*  ||======|======|======||=====================|=====================||  */
+/*  ||  *   |  *   |  0   ||         YES         |          NO         ||  */
+/*  ----------------------||---------------------|---------------------||  */
+/*                        ||  slave  --  master  |  slave  --  master  ||  */
+/*                        ||=====================|=====================||  */
+/*                        ||  _1_M_  --  _1_1_   |  _0_M_  --  _0_1_   ||  */
 /*                        -----------------------------------------------  */
