@@ -57,7 +57,7 @@
 #div_button_generate:hover {
     cursor: pointer;
     box-shadow: 0px 0px 17px var(--shadow);
-    background-color: var(--elements-backgroud-color-other);
+    background-color: yellowgreen;
     filter: drop-shadow(0px 0px 10px var(--elements-backgroud-color-other));
 }
 

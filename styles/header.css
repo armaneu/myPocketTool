@@ -1,11 +1,82 @@
+/* Customizing the HTML Header section
+   ========================================================================== */
+
+/*                               DESKTOP STYLES                               */
+
+
 .topheader {
-    background-color: var(--elements-backgroud-color-other);
-    margin: 0 var(--margin);
-    line-height: 50px;
-    text-align: center;
+  position: fixed;
+  width: 100%;
+  top: 0%;
+  left: 0%;
+  z-index: 100;
 }
 
-.topheaderdiv {
-    margin: 0;
-    padding: 0;
+.topnavbar {
+  font-family: monospace;
+}
+
+.menu {
+  font-size: 16px;
+  min-width: 360px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--backgroud-color);
+}
+  
+.menu li {
+  float: left;
+}
+
+.menu li a {
+  display: block;
+  color: var(--text-color-inverse);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.menu li a:hover:not(.active) {
+  background-color: orangered;
+}
+
+.menu .active {
+  background-color: #04AA6D;
+}
+
+.submenu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+	background-color: var(--backgroud-color);
+	visibility: hidden;
+  opacity: 0;
+  min-width: 5rem;
+	position: absolute;
+  transition: all 0.5s ease;
+  margin-top: 1rem;
+  display: none;
+}
+
+.menu li:hover > ul,
+.submenu:hover {
+  margin: 0;
+  visibility: visible;
+  opacity: 1;
+  display: block;
+}
+
+.submenu li {
+	clear: both;
+  width: 100%;
+}
+
+.submenu li a {
+  display: block;
+  color: var(--text-color-inverse);
+  text-align: left;
+  padding: 14px 16px;
+  text-decoration: none;
 }

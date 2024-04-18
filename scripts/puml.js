@@ -18,6 +18,7 @@ Oracle = {
         plantumlCode += 'skinparam linetype ortho\n';
         plantumlCode += 'skinparam shadowing false\n';
         plantumlCode += 'skinparam handwritten false\n';
+        plantumlCode += 'skinparam svgLinkTarget docframe\n';
         plantumlCode += 'skinparam class {\n';
         plantumlCode += '    BackgroundColor PaleTurquoise\n';
         plantumlCode += '}\n\n';
@@ -148,8 +149,16 @@ Oracle = {
                     // START - Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     const entity = Object.create(TEntity);  // creating the object of type TEntity
                     entity.name = Utils.getStringBetweenStrings(sql_sentence, 'CREATE TABLE', '(').toUpperCase();
-                    ////entity.description = `This is the entity ${entity.name}`;  // <== OJO == replace for real description
-                    entity.description = `[[http://plantuml.com{click for more details} This is the entity ${entity.name}]]`;  // <== OJO == replace for real description
+                    const table_name = UtilsSQL.getTableNameFromSchema(entity.name);
+                    if (global_table_description_array != null && Array.isArray(global_table_description_array)) {
+                        const table_description = global_table_description_array.find((table) => table.name.toUpperCase() === table_name);
+                        console.log(`table_description ==>  ${table_description}`);
+                        if (table_description != undefined) {
+                            entity.description = `[[data/ListTables.html#${table_name}{click here for more details} ${table_description.description}]]`;
+                        } else {
+                            entity.description = `[[data/ListTables.html#${table_name}{click here for more details} No description]]`;
+                        }  
+                    } 
                     entity.columns_array = UtilsSQL.getColumnArray(sql_sentence);  // to store all the entity's column
                     entity.pk_array = new Array();        // to store the primary key(s)
                     entity.pf_array = new Array();        // to store the primary foreign key(s)

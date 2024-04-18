@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="myPocketUML : Pocket Tool for DDL to PlantUML conversion">
     <meta name="author" content="Armando Abreu Duque">
-    <meta name="keywords" content="dll, plantuml, uml, tool, software, developer">
+    <meta name="keywords" content="sql, dll, uml, plantuml, software, development, converter, tool">
     <title>myPocketUML</title>
     <link rel="stylesheet" href="styles/normalize.css">
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/conversion.css">
     <link rel="stylesheet" href="styles/diagram.css">
+    <link rel="stylesheet" href="styles/connection.css">
 
+    <script defer src="scripts/frontend/__00_welcome.js"></script>
+    <script defer src="scripts/frontend/__01_tools.js"></script>
+    <script defer src="scripts/frontend/__02_settings.js"></script>
+
+    <script defer src="scripts/globals.js"></script>
     <script defer src="scripts/rawdeflate.js"></script>
     <script defer src="scripts/puml.js"></script>
     <script defer src="scripts/encoding.js"></script>
@@ -20,39 +26,71 @@
     <script defer src="scripts/sql.js"></script>
     <script defer src="scripts/app.js"></script>
 </head>
-<body>
+<body id="body">
     <header class="topheader">
-        <div class="topheaderdiv">
-            <h1>Pocket Tool for DDL to PlantUML conversion</h1>
+        <div class="menudiv">
+            <nav class="topnavbar" id="topnavbar_id">
+                <ul class="menu">
+                    <li><a href="#">Tools</a>
+                        <ul class="submenu">
+                            <li onclick="onclickDDLPlantUML()"><a href="#">DDL to PlantUML</a></li>
+                            <li><a href="#">XML to PlantUML</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Settings</a>
+                        <ul class="submenu">
+                            <li><a href="#">Connection parameters</a></li>
+                            <li><a href="#">Sub-2</a></li>
+                            <li><a href="#">Sub-3</a></li>
+                        </ul>
+                    </li>
+                    <li style="float: right; font-weight: bold;" onclick="getWelcome()"><a class="active" href="#">myPocketUML</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
-    <main>
+    <main id="main">
         <article>
-            <section id="section_conversion">
-                <div class="section_div_conversion_grid">
-                    <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_DDL">
-                        <label for="DDL">DDL code</label> <br>
-                        <textarea name="DDL" id="DDL" cols="130" rows="10"></textarea> <br>
-                        <button type="button" onclick="openFile()">Load DDL</button>
-                        <input id="inputFile" type='file' accept=".ddl, .sql, .txt" style="display: none;" onchange="readFile(event)" />
-                    </div>
-                    <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_space">
-                        <div id="div_button_generate" onclick="generateDiagram()">
-                            <img src="img/arrow.png" alt="generate arrow" width="50px">
+            <section id="section_connection">
+                <div id="div_setconnection">
+                    <h2>Connection parameters</h2>
+                    <form action="" class="form_setconnection" id="form_setconnection" method="post">
+                        <div class="div_form_setconnection">
+                            <label class="label_setconnection" for="host">Host</label>
+                            <input class="input_setconnection" required type="text" name="host" id="host" maxlength="35" placeholder="Enter IP address or domain name">
                         </div>
-                    </div>
-                    <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_UML">
-                        <label for="UML">PlantUML code</label> <br>
-                        <textarea name="UML" id="UML" cols="130" rows="10"></textarea> <br>
-                        <button type="button" onclick="downloadUML()">Save UML</button>
-                    </div>
+                        <div class="div_form_setconnection">
+                            <label class="label_setconnection" for="port">Port</label>
+                            <input class="input_setconnection" required type="text" name="port" id="port" maxlength="6" placeholder="Enter 6-digit maximum number" onkeypress="return onlyNumberKey(event)" onkeydown="onlyNumberCharacter('port')">
+                        </div>
+                        <div class="div_form_setconnection">
+                            <label class="label_setconnection" for="service_name">Service name</label>
+                            <input class="input_setconnection" required type="text" name="service_name" id="service_name" maxlength="35" placeholder="Enter database service name">
+                        </div>
+                        <div class="div_form_setconnection">
+                            <label class="label_setconnection" for="database">Database</label>
+                            <input class="input_setconnection" required type="text" name="database" id="database" maxlength="20" placeholder="Enter database name">
+                        </div>
+                        <div class="div_form_setconnection">
+                            <label class="label_setconnection" for="schema">Schema</label>
+                            <input class="input_setconnection" required type="text" name="schema" id="schema" maxlength="20" placeholder="Enter database schema name">
+                        </div>
+                        <div class="div_form_setconnection">
+                            <label class="label_setconnection" for="username">Username</label>
+                            <input class="input_setconnection" required type="text" name="username" id="username" maxlength="20" placeholder="Enter username">
+                        </div>
+                        <div class="div_form_setconnection">
+                            <label class="label_setconnection" for="password">Password</label>
+                            <input class="input_setconnection" required type="password" name="password" id="password" maxlength="20" placeholder="Enter password">
+                        </div>
+                        <div class="div_button_group">
+                            <button type="button" class="button_setconnection" onclick="onGetConnectionParameters()">GET PARAMETERS</button>
+                            <button type="button" class="button_setconnection" style="float: right; font-weight: bold;" onclick="onSetConnectionParameters()">SET PARAMETERS</button>
+                        </div>
+                    </form>
                 </div>
-            </section>
-            <section id="section_diagram">
-                <div class="section_div_diagram">
-                    <iframe id="iframe_diagram" src="" frameborder="0"></iframe>
-                </div>
+                <div id="div_getconnection"></div>
             </section>
         </article>
     </main>

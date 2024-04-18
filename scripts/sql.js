@@ -9,6 +9,21 @@ const _0_M_ = {uml: '0..*', barker: '}o',};  // ZERO or MANY
 const _1_M_ = {uml: '1..*', barker: '}|',};  // ONE or MANY
 
 
+/**
+ * TConnection object to store the connections parameters and credentials
+ */
+const TConnection = {
+    host: '',          // hostname or IP address of the database
+    port: '',          // port number to stablish the connection
+    service_name: '',  // database service name
+    database: '',      // the name of the database
+    schema: '',        // the schema of the database
+    username: '',      // user with access to the database
+    password: '',      // the password of the user
+};
+
+const CONNECTION = Object.create(TConnection);
+
 
 const TKeyMasterSlave = {
     key_master: '',  // the key name of the master entity
@@ -136,6 +151,11 @@ UtilsSQL = {
     },
 
 
+    /**
+     * This method resolves the cardinalities among the entities
+     * @param {*} entity_full_list List of TEntity objects which contains data of the tables of interest
+     * @returns 
+     */
     getCardinalities: function (entity_full_list) {
         let result_array = entity_full_list;
         
@@ -211,7 +231,28 @@ UtilsSQL = {
         }
 
         return result_array;
-    }
+    },
+
+
+    /**
+     * This method retrieves the table name from the given parameter in case it contains the name of the schema too
+     * @param {*} schema_table {schema}.{table}, example: schemaX.TableA, then table name is 'TableA'
+     * @returns The name of the table
+     */
+    getTableNameFromSchema: function (schema_table) {
+        let result = '';
+
+        if (schema_table != null && schema_table.length > 0) {
+            if (schema_table.includes('.')) {
+                let index_last_dot = schema_table.length - schema_table.split('.').reverse().join('.').indexOf('.');
+                result = schema_table.substring(index_last_dot, schema_table.length);
+            } else {
+                result = schema_table;
+            }
+        }
+
+        return result;
+    },
 };
 
 
