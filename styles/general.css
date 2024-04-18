@@ -67,8 +67,8 @@ p {
 }
 
 main {
-    ***margin-top: 92px; /*Header height + Navbar height = (50px + 42px)*/
-    ***padding-top: 3px;
+    **margin-top: 92px; /*Header height + Navbar height = (50px + 42px)*/
+    **padding-top: 3px;
 }
 
 article {
