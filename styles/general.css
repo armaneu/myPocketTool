@@ -16,6 +16,9 @@
 
     --color-accent: #6200ee;
     --color-highlight-control: #1e90ff;
+    --color-highlight-fill-control-green: #04AA6D;
+    --color-highlight-fill-control-red: #dc143c;
+    --color-highlight-fill-control-blue: #1e90ff;
     --field-background: #f0f0f0;
     --field-background--hover: #e2e2e2;
 

@@ -17,7 +17,7 @@ async function onclickDDLPlantUML() {
                     </div>
                     <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_space">
                         <div id="div_button_generate" onclick="generateDiagram()">
-                            <img src="img/arrow.png" alt="generate arrow" width="50px">
+                            <img src="images/arrow.png" alt="generate arrow" width="50px">
                         </div>
                     </div>
                     <div class="section_div_conversion_grid_item" id="section_div_conversion_grid_item_UML">
