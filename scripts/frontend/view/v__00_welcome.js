@@ -1,16 +1,16 @@
 
 /**
- * HTML { html } tag
+ * { main } html tag object for use in other views
  */
-let __HTML;
-
+var __MAIN__ = document.querySelector('#main');
 
 /**
- * HTML { main } tag
+ * Display the initial view
  */
-let __MAIN = '<main></main>';
-
-
-async function getWelcome() {
-    document.getElementById('main').innerHTML = '';
+function displayWelcome() {
+    try {
+        __MAIN__.innerHTML = '';
+    } catch (error) {
+        
+    }
 }

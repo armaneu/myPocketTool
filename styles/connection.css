@@ -7,7 +7,6 @@
     top: 0;
     padding-bottom: 20px;
     display: flex;
-    **background-color: var(--elements-backgroud-color);
 }
 
 #section_connection h2 {
@@ -54,7 +53,6 @@
     min-height: 25px;
     font-family: monospace;
     position: relative;
-   
 }
 
 .input_setconnection:focus {
@@ -145,7 +143,15 @@
 /* Eye icon styles */
 .password-wrapper {
 	position: relative;
+    margin: 0;
+    padding: 0;
+    bottom: 0px;
 }
+
+#password {
+    width: 100%;
+}
+
 
 .toggle-button {
 	display: inline-flex;
@@ -155,4 +161,6 @@
 	left: unset;
 	right: 12px;
 	cursor: pointer;
+    margin: 0;
+    padding: 0;
 }

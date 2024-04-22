@@ -23,6 +23,7 @@ const TConnection = {
 };
 
 const CONNECTION = Object.create(TConnection);
+window.CONNECTION = CONNECTION;  // globally scope during the entire application life-cycle
 
 
 const TKeyMasterSlave = {
