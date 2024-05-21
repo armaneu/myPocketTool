@@ -1,3 +1,7 @@
+
+// List to store all the entities that will be found
+var entity_full_list = new Array();
+
 /**
  * 'Namespace' of methods for Oracle database
  */
@@ -137,7 +141,7 @@ Oracle = {
             // @startuml =============================================================================
             
 
-            let entity_full_list = new Array();  // creating a list to store all the entities that will be found
+            entity_full_list = new Array();  // creating a list to store all the entities that will be found
             for (const sql_sentence of ddl_array) {
                 console.log(sql_sentence);
 

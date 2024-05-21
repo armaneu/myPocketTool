@@ -1,7 +1,7 @@
 
 
 
-async function onclickDDLPlantUML() {
+function onclickDDLPlantUML() {
     const content = `
         <article>
             <section id="section_conversion">

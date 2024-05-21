@@ -86,3 +86,48 @@ function downloadUML(){
     document.body.removeChild(anchor);
  }
 
+function createHTMLPage(title, content) {
+    
+    let doc = document.implementation.createHTMLDocument(title);
+    let blob = new Blob([content], { type: "text/html"});
+
+    let anchor = document.createElement("a");
+    anchor.download = "myHTMLFile.html";
+    anchor.href = window.URL.createObjectURL(blob);
+    anchor.target ="_blank";
+    anchor.style.display = "none"; // just to be safe!
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+}
+
+
+function createHTMLPage() {
+    let content = '', html = '';
+    if (entity_full_list != null && entity_full_list != undefined && Array.isArray(entity_full_list)) {
+        let entity = entity_full_list[0];
+        content = Utils.generateHTMLTableFromEntity(entity);
+
+
+
+         html = Utils.generateHTMLDocument(content);
+
+    console.log(`CONTENT: ${content}/n/n`);
+    console.log(`HTML: ${html}/n/n`);
+    console.log(`LENGTH: ${entity.columns_array.length}`);
+    }
+
+    
+    
+    let doc = document.implementation.createHTMLDocument("Entity details");
+    let blob = new Blob([html], { type: "text/html"});
+
+    let anchor = document.createElement("a");
+    anchor.download = "myHTMLFile.html";
+    anchor.href = window.URL.createObjectURL(blob);
+    anchor.target ="_blank";
+    anchor.style.display = "none"; // just to be safe!
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+ }
