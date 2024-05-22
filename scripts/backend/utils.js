@@ -45,7 +45,8 @@ Utils = {
             
             let html_caption = `
                 <caption>
-                    Entity: ${entity.name.toUpperCase()}
+                    <div class="div_circle_E">E</div>
+                    ${entity.name.substring(entity.name.indexOf('.') + 1, entity.name.length).trim().toUpperCase()}
                 </caption>
             `;
 
@@ -74,7 +75,7 @@ Utils = {
             let html_tfoot = `
                 <tfoot>
                     <tr>
-                        <td colspan="2"></td>
+                        <td>${entity.description}</td>
                     </tr>
                 </tfoot>
             `;
@@ -105,6 +106,7 @@ Utils = {
     generateHTMLDocument: function(content) {
         let result = '';
         
+
         let html = `
             <!DOCTYPE html>
                 <html lang="en">
@@ -112,8 +114,111 @@ Utils = {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta name="description" content="Details of database entities">
-
                     <title>Entity details</title>
+                    <style>
+                        :root {
+                            /* Color Hunt Palette 2650732d95969ad0c2f1fada - https://colorhunt.co/palette/2650732d95969ad0c2f1fada */
+                            --color-01: #265073;
+                            --color-02: #2D9596;
+                            --color-03: #9AD0C2;
+                            --color-04: #ebebeb;
+                            --color-05: #333333;
+                            /* Other colors */
+                            --white: #fcfcfc;
+                            --shadow: #808080;
+                            --black: #121212;
+                        
+                            --color-accent: #6200ee;
+                            --color-highlight-control: #1e90ff;
+                            --color-highlight-fill-control-green: #04AA6D;
+                            --color-highlight-fill-control-red: #dc143c;
+                            --color-highlight-fill-control-blue: #1e90ff;
+                            --field-background: #f0f0f0;
+                            --field-background--hover: #e2e2e2;
+                        
+                            /* Theme colors */
+                            --theme-color: var(--color-04);
+                            --theme-color-dark: var(--black);
+                            --elements-backgroud-color: var(--color-01);
+                            --elements-backgroud-color-alter: var(--color-02);
+                            --elements-backgroud-color-other: var(--color-03);
+                            --backgroud-color: var(--color-05);
+                        
+                            /* Navbar colors */
+                            --navbar-theme-color: var(--theme-color-dark);
+                            --navbar-shadow-color: var(--shadow);
+                            --navbar-hover-color: var(--elements-backgroud-color);
+                            
+                            /* Font text colors */
+                            --text-color: var(--black);
+                            --text-color-inverse: var(--theme-color);
+                            
+                            /* Settings */
+                            --margin: 1%;
+                            --min-width: 360px;
+                            --max-width: 100%;
+                        }
+                        
+                        * {
+                            box-sizing: border-box;
+                        }
+                        
+                        html {
+                            scroll-behavior: smooth;
+                        }
+
+                        body {
+                            font-family: Helvetica, sans-serif;
+                            background-color: var(--theme-color);
+                            color: var(--text-color);
+                            margin: 0% auto;
+                            min-width: var(--min-width);
+                            max-width: var(--max-width);
+                            padding: 0 0.7%;
+                        }
+
+                        h1 {
+                            font-size: 28px;
+                            font-weight: bold;
+                            text-align: center;
+                        }
+
+                        table {
+                            border: 1px solid;
+                            border-radius: 4px;
+                            margin: 0 auto;
+                            width: 80%;
+                        }
+
+                        caption {
+                            caption-side: top;
+                            text-align: left;
+                            line-height: 36px;
+                            font-size: 24px;
+                        }
+
+                        thead {
+                            background-color: var(--elements-backgroud-color-other);
+                        }
+
+                        div {
+                            margin: 20px auto;
+                        }
+
+                        .div_circle_E {
+                            display: inline-block; 
+                            margin: 0;
+                            padding: 0;
+                            width: 32px;
+                            height: 32px;
+                            line-height: 32px;
+                            border-radius: 50%;
+                            font-size: 24px;
+                            font-weight: bold;
+                            text-align: center;
+                            background-color: var(--elements-backgroud-color-other);
+                        }
+                    </style>
                 </head>
                 <body>
                     <header>
