@@ -29,6 +29,7 @@
     --elements-backgroud-color-alter: var(--color-02);
     --elements-backgroud-color-other: var(--color-03);
     --backgroud-color: var(--color-05);
+    --background-color-alter: #dddddd;
 
     /* Navbar colors */
     --navbar-theme-color: var(--theme-color-dark);

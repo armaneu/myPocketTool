@@ -45,8 +45,7 @@ Utils = {
             
             let html_caption = `
                 <caption>
-                    <div class="div_circle_E">E</div>
-                    ${entity.name.substring(entity.name.indexOf('.') + 1, entity.name.length).trim().toUpperCase()}
+                    ${entity.description}
                 </caption>
             `;
 
@@ -55,7 +54,6 @@ Utils = {
                     <tr>
                         <th>Column name</th>
                         <th>Data type</th>
-                        <th>Mandatory</th>
                     </tr>
                 </thead>
             `;
@@ -66,7 +64,6 @@ Utils = {
                         <tr>
                             <td>${column.name}</td>
                             <td>${column.data_type}</td>
-                            <td>${column.mandatory}</td>
                         </tr>
                     `;
                 });
@@ -75,7 +72,7 @@ Utils = {
             let html_tfoot = `
                 <tfoot>
                     <tr>
-                        <td>${entity.description}</td>
+                        <th scope="row" colspan="2"></th>
                     </tr>
                 </tfoot>
             `;
@@ -89,9 +86,15 @@ Utils = {
                 </table>
             `;
 
+            let entity_name = entity.name.substring(entity.name.indexOf('.') + 1, entity.name.length).trim().toUpperCase();
             let html_div = `
-                <div>
-                    ${html_table}
+                <div class="div_entiy_master">
+                    <div class="div_square_E">E</div>
+                    <a class="a_entity_name" href="data/ListTables.html#${entity_name}" target="_blank" rel="noopener noreferrer">${entity_name}</a>
+
+                    <div class="div_entity_table">
+                        ${html_table}
+                    </div>
                 </div>
             `;
 
@@ -143,6 +146,7 @@ Utils = {
                             --elements-backgroud-color-alter: var(--color-02);
                             --elements-backgroud-color-other: var(--color-03);
                             --backgroud-color: var(--color-05);
+                            --background-color-alter: #dddddd;
                         
                             /* Navbar colors */
                             --navbar-theme-color: var(--theme-color-dark);
@@ -171,10 +175,10 @@ Utils = {
                             font-family: Helvetica, sans-serif;
                             background-color: var(--theme-color);
                             color: var(--text-color);
-                            margin: 0% auto;
+                            margin: 0 auto;
+                            padding: 0 0.7%;
                             min-width: var(--min-width);
                             max-width: var(--max-width);
-                            padding: 0 0.7%;
                         }
 
                         h1 {
@@ -184,39 +188,117 @@ Utils = {
                         }
 
                         table {
-                            border: 1px solid;
-                            border-radius: 4px;
+                            border-collapse: collapse;
+                            border-radius: 5px 5px 0 0;
+                            overflow: hidden;
+                            border-spacing: 0;
                             margin: 0 auto;
-                            width: 80%;
+                            width: 800px;
+                            background-color: var(--field-background);
+                            font-size: 0.9em;
+                            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
                         }
 
                         caption {
-                            caption-side: top;
+                            caption-side: bottom;
                             text-align: left;
                             line-height: 36px;
-                            font-size: 24px;
                         }
 
                         thead {
-                            background-color: var(--elements-backgroud-color-other);
+                            background-color: var(--elements-backgroud-color-alter);
+                            line-height: 32px;
+                            height: 32px;
+                            padding: 0;
                         }
 
-                        div {
-                            margin: 20px auto;
+                        tbody {
+                            overflow-y: scroll; /* Show vertical scrollbar */
+                            overflow-x: scroll; /* Show horizontal scrollbar */
+                            max-height: 435px;
                         }
 
-                        .div_circle_E {
+                        tbody tr:nth-of-type(even) {
+                            background-color: var(--field-background--hover);
+                        }
+
+                        tbody tr:last-of-type {
+                            border-bottom: 3px solid var(--elements-backgroud-color-alter);
+                        }
+                        
+                        /* To display the block as level element */
+		                tbody,
+		                thead {
+		                	display: block;
+		                }
+
+                        thead tr th {
+		                	height: 32px;
+		                	line-height: 32px;
+                            color: var(--text-color-inverse);
+                            font-weight: bold;
+                            text-align: left;
+                            text-transform: uppercase;
+		                }
+
+                        tbody tr {
+                            border-bottom: 1px solid var(--background-color-alter);
+                        }
+
+                        tbody tr:hover {
+                            color: var(--elements-backgroud-color-alter);
+                            font-weight: bold;
+                        }
+
+                        tbody tr td {
+                            line-height: 24px;
+                            height: 24px;
+                        }
+
+                        tr th,
+                        tr td {
+                            cursor: default;
+                            padding: 0 12px;
+                        }
+
+                        thead th,
+                        tbody td
+		                {
+		                	width: 400px;
+		                }
+
+                        .div_entiy_master {
+                            margin: 1em auto 2.8em auto;
+                            width: 900px;
+                        }
+
+                        .div_square_E {
                             display: inline-block; 
-                            margin: 0;
+                            margin: 0 0px 4px 50px;
                             padding: 0;
                             width: 32px;
                             height: 32px;
                             line-height: 32px;
-                            border-radius: 50%;
+                            border-radius: 3px;
                             font-size: 24px;
                             font-weight: bold;
                             text-align: center;
                             background-color: var(--elements-backgroud-color-other);
+                        }
+                        
+                        .div_entity_table {
+                            padding: 0 12px;
+                        }
+
+                        .a_entity_name {
+                            display: inline-block;
+                            text-decoration: none;
+                            line-height: 32px;
+                            height: 32px;
+                            font-size: 24px;
+                            margin: 0;
+                            padding: 0 0 0 10px;
+                            font-weight: bold;
                         }
                     </style>
                 </head>
