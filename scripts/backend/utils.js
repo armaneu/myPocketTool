@@ -203,6 +203,8 @@ Utils = {
                             caption-side: bottom;
                             text-align: left;
                             line-height: 36px;
+                            font-size: 14px;
+                            font-weight: bold;
                         }
 
                         thead {

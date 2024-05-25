@@ -95,7 +95,10 @@ Oracle = {
             plantumlCode += `${separator}`;  // separator
             // Setting Description
             if (entity.description != null && entity.description.length > 0) {  // entity description
-                plantumlCode += `${entity.description}\n`;
+                let entity_name = entity.name.substring(entity.name.indexOf('.') + 1, entity.name.length).trim().toUpperCase();
+                let entity_description = entity.description;
+                let entity_description_link = `[[data/ListTables.html#${entity_name}{click here for more details} ${entity_description}]]`;
+                plantumlCode += `${entity_description_link}\n`;
             }
             plantumlCode += '}\n\n';  // closing
         }
@@ -158,9 +161,9 @@ Oracle = {
                         const table_description = global_table_description_array.find((table) => table.name.toUpperCase() === table_name);
                         console.log(`table_description ==>  ${table_description}`);
                         if (table_description != undefined) {
-                            entity.description = `[[data/ListTables.html#${table_name}{click here for more details} ${table_description.description}]]`;
+                            entity.description = `${table_description.description}`;
                         } else {
-                            entity.description = `[[data/ListTables.html#${table_name}{click here for more details} No description]]`;
+                            entity.description = `No description`;
                         }  
                     } 
                     entity.columns_array = UtilsSQL.getColumnArray(sql_sentence);  // to store all the entity's column
