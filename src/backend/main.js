@@ -92,7 +92,7 @@ function createHTMLPage(title, content) {
     let blob = new Blob([content], { type: "text/html"});
 
     let anchor = document.createElement("a");
-    anchor.download = "myHTMLFile.html";
+    anchor.download = "Entity details.html";
     anchor.href = window.URL.createObjectURL(blob);
     anchor.target ="_blank";
     anchor.style.display = "none"; // just to be safe!
