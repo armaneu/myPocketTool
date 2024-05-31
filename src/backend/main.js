@@ -105,13 +105,6 @@ function createHTMLPage(title, content) {
 function createHTMLPage() {
     let content = '', html = '';
     if (entity_full_list != null && entity_full_list != undefined && Array.isArray(entity_full_list)) {
-        ////let entity = entity_full_list[0];
-        ////content = Utils.generateHTMLTableFromEntity(entity);
-        ////html = Utils.generateHTMLDocument(content);
-        ////console.log(`CONTENT: ${content}/n/n`);
-        ////console.log(`HTML: ${html}/n/n`);
-        ////console.log(`LENGTH: ${entity.columns_array.length}`);
-
 
         entity_full_list.forEach(entity => {
             content += Utils.generateHTMLTableFromEntity(entity);
