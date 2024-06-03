@@ -52,8 +52,9 @@ Utils = {
             let html_thead = `
                 <thead>
                     <tr>
-                        <th>Column name</th>
-                        <th>Data type</th>
+                        <th class="column_01">Key</th>
+                        <th class="column_02">Column name</th>
+                        <th class="column_03">Data type</th>
                     </tr>
                 </thead>
             `;
@@ -62,8 +63,9 @@ Utils = {
                 entity.columns_array.forEach(column => {
                     html_tbody += `
                         <tr>
-                            <td>${column.name}</td>
-                            <td>${column.data_type}</td>
+                            <td class="column_01">${column.key} ${column.mandatory ? '<strong style="color: red;">*</strong>'  : ''}</td>
+                            <td class="column_02">${column.name}</td>
+                            <td class="column_03">${column.data_type}</td>
                         </tr>
                     `;
                 });
@@ -72,7 +74,7 @@ Utils = {
             let html_tfoot = `
                 <tfoot>
                     <tr>
-                        <th scope="row" colspan="2"></th>
+                        <th scope="row" colspan="3"></th>
                     </tr>
                 </tfoot>
             `;
@@ -228,8 +230,8 @@ Utils = {
                         }
 
                         tbody {
-                            overflow-y: scroll; /* Show vertical scrollbar */
-                            overflow-x: scroll; /* Show horizontal scrollbar */
+                            overflow-y: auto; /* Show vertical scrollbar */
+                            overflow-x: hidden; /* Hide horizontal scrollbar */
                             max-height: 435px;
                         }
 
@@ -276,11 +278,19 @@ Utils = {
                             padding: 0 12px;
                         }
 
-                        thead th,
-                        tbody td
-		                {
-		                	width: 400px;
-		                }
+                        .column_01 {
+                            width: 60px;
+                        }
+
+                        tbody .column_01 {
+                            font-family: "Helvetica, sans-serif", monospace;
+                            color: var(--color-highlight-fill-control-blue);
+                            font-weight: bold;
+                        }
+
+                        .column_02, .column_03 {
+                            width: 370px;
+                        }
 
                         .div_entiy_master {
                             margin: 1em auto 2.8em auto;

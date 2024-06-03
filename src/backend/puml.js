@@ -146,8 +146,6 @@ Oracle = {
 
             entity_full_list = new Array();  // creating a list to store all the entities that will be found
             for (const sql_sentence of ddl_array) {
-                console.log(sql_sentence);
-
                 // Getting the entity names and their primary and foreign keys
                 if (sql_sentence.toUpperCase().indexOf('CREATE TABLE') > -1 &&      // asking if it is a sentence of type  'CREATE TABLE'
                     sql_sentence.indexOf('(') > -1 &&                               // looking for the first occurrence of '('
@@ -159,7 +157,6 @@ Oracle = {
                     const table_name = UtilsSQL.getTableNameFromSchema(entity.name);
                     if (global_table_description_array != null && Array.isArray(global_table_description_array)) {
                         const table_description = global_table_description_array.find((table) => table.name.toUpperCase() === table_name);
-                        console.log(`table_description ==>  ${table_description}`);
                         if (table_description != undefined) {
                             entity.description = `${table_description.description}`;
                         } else {
@@ -176,9 +173,6 @@ Oracle = {
                     entity.relation_array = new Array();  // to store the related entities
 
 
-                    entity.columns_array.forEach(column => {
-                        console.log(`TColumn ==> ${column.name} | ${column.data_type} | ${column.mandatory}`);
-                    });
                     // END  -  Algorithm to know the ENTITY NAME of 'CREATE TABLE'
                     //
                     //
@@ -235,13 +229,15 @@ Oracle = {
                                 entity.pk_array.splice(i, 1);  // to avoid showing duplicate value
                                 pk_length--;  // decrementing {length} in one
                                 i--;          // decrementing index {i} in one
+                                
                                 entity.fk_array.splice(j, 1);  // to avoid showing duplicate value
                                 fk_length--;  // decrementing {length} in one
                                 j--;          // decrementing index {j} in one
                             }
                         }
                     }
-                    
+                    // Identifying the keys in the columns_array property of TEntity object
+                    entity.setKeys();
 
                     // Storing the new entity
                     entity_full_list.push(entity);
@@ -266,29 +262,6 @@ Oracle = {
             // @enduml ===================================================================================
             plantumlCode = Oracle.plantuml_end(plantumlCode);  // ending the definition of PlantUML syntax
             // @enduml ===================================================================================
-
-
-
-
-
-
-            // CONSOLE LOGS FOR TESTING
-            entity_full_list.forEach(entity => {
-                console.log(`ENTITY count: ${entity_full_list.length}\n\n`);
-                console.log(`ENTITY: ${entity.name}\n    ==>  ${entity.relation_array}`);
-                
-                entity.sql_array.forEach(sql => {
-                    console.log(`SQL: ${sql}`);
-                });
-            });
-
-            console.log('getStringArrayBetweenComma RESULT:')
-            let arr = Utils.getStringArrayBetweenComma('( ebj_benutzerk1, ebj_datum, ebj_snr )');
-            console.log(arr);
-            arr = Utils.getStringArrayBetweenComma('( ebj_benutzerk1 )');
-            console.log(arr);
-
-
 
 
 

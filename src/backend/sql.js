@@ -47,6 +47,7 @@ const TColumn = {
     name: '',          // column name
     data_type: '',     // data type
     mandatory: false,  // if column is mandatory then {true}
+    key: '',           // if column is a key then possible values can be {PK, PF, FK}
 };
 
 /**
@@ -61,6 +62,49 @@ const TEntity = {
     fk_array: new Array(),        // stores the foreign key(s)
     sql_array: new Array(),       // stores CREATE TABLE, ALTER TABLE sql instructions related to the entity
     relation_array: new Array(),  // list of names of the master entities it is related to
+
+    /**
+     * This method allows you to set the key type if it matches the search.
+     */
+    setKeys() {  // possible values of [key] can be {PK, PF, FK}
+        if (this.columns_array != null && this.columns_array != undefined && Array.isArray(this.columns_array)) {
+            // Searching for PRIMARY KEY {PK}
+            if (this.pk_array != null && this.pk_array != undefined && Array.isArray(this.pk_array)) {
+                this.pk_array.forEach(pk => {
+                    for (let index = 0; index < this.columns_array.length; index++) {
+                        if (this.columns_array[index].name == pk) {
+                            this.columns_array[index].key = 'PK';
+                            break;
+                        }
+                    }
+                });
+            }
+
+            // Searching for PRIMARY FOREIGN {PF}
+            if (this.pf_array != null && this.pf_array != undefined && Array.isArray(this.pf_array)) {
+                this.pf_array.forEach(pf => {
+                    for (let index = 0; index < this.columns_array.length; index++) {
+                        if (this.columns_array[index].name == pf) {
+                            this.columns_array[index].key = 'PF';
+                            break;
+                        }
+                    }
+                });
+            }
+
+            // Searching for FOREIGN KEY {FK}
+            if (this.ff_array != null && this.ff_array != undefined && Array.isArray(this.ff_array)) {
+                this.fk_array.forEach(fk => {
+                    for (let index = 0; index < this.columns_array.length; index++) {
+                        if (this.columns_array[index].name == fk) {
+                            this.columns_array[index].key = 'FK';
+                            break;
+                        }
+                    }
+                });
+            }
+        }
+    },
 };
 
 
