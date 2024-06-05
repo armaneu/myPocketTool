@@ -1,4 +1,3 @@
-
 /**
  * Display the initial view
  */

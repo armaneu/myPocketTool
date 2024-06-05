@@ -1,6 +1,6 @@
-
-
-
+/**
+ * Display the { Convert DDL to PlantUML tool } view
+ */
 function onclickDDLPlantUML() {
     const content = `
         <article>
@@ -35,5 +35,9 @@ function onclickDDLPlantUML() {
         </article>
         `;
 
-    document.getElementById('main').innerHTML = content;
+    try {
+        __MAIN__.innerHTML = content;
+    } catch (error) {
+        
+    }    
 }

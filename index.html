@@ -16,9 +16,11 @@
     <link rel="stylesheet" href="styles/conversion.css">
     <link rel="stylesheet" href="styles/diagram.css">
     <link rel="stylesheet" href="styles/connection.css">
+    <link rel="stylesheet" href="styles/dialogs.css">
 
     <!-- View -->
     <script defer src="src/frontend/view/v__globals.js"></script>
+    <script defer src="src/frontend/view/v__dialog_boxes.js"></script>
     <script defer src="src/frontend/view/v__00_welcome.js"></script>
     <script defer src="src/frontend/view/v__01_tools.js"></script>
     <script defer src="src/frontend/view/v__02_settings.js"></script>
@@ -43,6 +45,7 @@
                         <ul class="submenu">
                             <li onclick="onclickDDLPlantUML()"><a href="#">Convert DDL to PlantUML</a></li>
                             <li onclick="createHTMLPage()"><a href="#">Save Entity details</a></li>
+                            <li onclick="dialogSaveEntityDetails()"><a href="#">Save Entity details 2</a></li>
                         </ul>
                     </li>
                     <li><a href="#">Scripts</a>

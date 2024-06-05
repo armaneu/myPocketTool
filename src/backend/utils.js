@@ -594,5 +594,16 @@ Utils = {
         result = html;
 
         return result;
-    }
+    },
+
+    getCurrentDate: function () {
+        // Get current date
+        const today = new Date(); // current date
+        const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+        const dayOfMonth = today.getUTCDate();                // day
+        const monthOfYear = monthNames[today.getUTCMonth()];  // month
+        const fullYear = today.getUTCFullYear();              // year
+
+        return `${monthOfYear} ${dayOfMonth}, ${fullYear}`;
+    },
 };
