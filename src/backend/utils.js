@@ -61,9 +61,26 @@ Utils = {
             
             let html_tbody = '<tbody>';
                 entity.columns_array.forEach(column => {
+                    // Making a tooltip hint if the column is a key of the entity
+                    let title = `${column.key != '' ? column.key + '  ' : ''}${column.mandatory ? '*' : ''}`;
+                    if (column.key != '') {
+                        column.mandatory ? title += `   =   ` : title += ` =   `;
+                        if (column.key == 'PK') {
+                            title += `Primary Key`;
+                        } else if (column.key == 'PF') {
+                            title += `Primary Foreign`;
+                        } else if (column.key == 'FK') {
+                            title += `Foreign Key`;
+                        }
+                        title += `${column.mandatory ? '  NOT NULL' : ''}`;
+                    } else {
+                        title += `${column.mandatory ? '   =   NOT NULL' : ''}`;
+                    }
+
+                    
                     html_tbody += `
                         <tr>
-                            <td class="column_01">${column.key} ${column.mandatory ? '<strong style="color: red;">*</strong>'  : ''}</td>
+                            <td class="column_01" title="${title}">${column.key} ${column.mandatory ? '<strong style="color: red;">*</strong>' : ''}</td>
                             <td class="column_02">${column.name}</td>
                             <td class="column_03">${column.data_type}</td>
                         </tr>
@@ -113,7 +130,14 @@ Utils = {
     },
 
 
-    generateHTMLDocument: function(content) {
+    /**
+     * Method to save the 'Entity details' as an html format file
+     * @param {string} content The content to be injected into the html
+     * @param {string} file_description The description of the file
+     * @param {string} date Current creation date of the file
+     * @returns HTML text code to save the file with the information
+     */
+    generateHTMLDocumentSED: function(content, file_description = '', date = '') {
         let result = '';
         
 
@@ -199,6 +223,26 @@ Utils = {
                             font-size: 28px;
                             font-weight: bold;
                             text-align: center;
+                            margin: 10px 0;
+                            padding: 0;
+                        }
+
+                        h2 {
+                            font-size: 20px;
+                            font-weight: bold;
+                            text-align: center;
+                            font-family: "Helvetica, sans-serif", monospace;
+                            margin: 0 0 25px 0;
+                            padding: 0;
+                        }
+
+                        h3 {
+                            font-size: 16px;
+                            font-weight: bold;
+                            text-align: center;
+                            font-family: "Helvetica, sans-serif", monospace;
+                            margin: 0 0 10px 0;
+                            padding: 0;
                         }
 
                         /* Table styles */
@@ -448,11 +492,12 @@ Utils = {
                 <body>
                     <header>
                         <h1>Entity details</h1>
+                        <h2>${file_description}</h2>
                     </header>
 
                     <main>
         `;
-        if (content != null && content != undefined && content.length > 0) {
+        if (content && content.length > 0) {
             html += `${content}`;
         }
         html += `
@@ -586,8 +631,10 @@ Utils = {
                                 })
                             });
                         </script>
-
                     </main>
+                    <footer>
+                        <h3>${date}</h3>
+                    </footer>
                 </body>
             </html>
         `;
@@ -600,9 +647,9 @@ Utils = {
         // Get current date
         const today = new Date(); // current date
         const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-        const dayOfMonth = today.getUTCDate();                // day
-        const monthOfYear = monthNames[today.getUTCMonth()];  // month
-        const fullYear = today.getUTCFullYear();              // year
+        const dayOfMonth = today.getDate();                // day
+        const monthOfYear = monthNames[today.getMonth()];  // month
+        const fullYear = today.getFullYear();              // year
 
         return `${monthOfYear} ${dayOfMonth}, ${fullYear}`;
     },

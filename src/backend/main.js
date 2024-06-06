@@ -9,7 +9,6 @@ function generateDiagram() {
     let ddl_text = document.getElementById('DDL').value;
     let plantumlCode = Oracle.plantuml_parser(ddl_text);
     document.getElementById('UML').value = plantumlCode;
-    console.log(plantumlCode);
 
     let url = 'http://127.0.0.1:8000/plantuml/svg/' + textEncoding(plantumlCode);
     document.getElementById('iframe_diagram').src = url;
@@ -99,27 +98,4 @@ function createHTMLPage(title, content) {
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
-}
-
-
-function createHTMLPage() {
-    let content = '', html = '';
-    if (entity_full_list != null && entity_full_list != undefined && Array.isArray(entity_full_list)) {
-
-        entity_full_list.forEach(entity => {
-            content += Utils.generateHTMLTableFromEntity(entity);
-        });
-        html = Utils.generateHTMLDocument(content);
-
-        let doc = document.implementation.createHTMLDocument("Entity details");
-        let blob = new Blob([html], { type: "text/html"});
-        let anchor = document.createElement("a");
-        anchor.download = "Entity details.html";
-        anchor.href = window.URL.createObjectURL(blob);
-        anchor.target ="_blank";
-        anchor.style.display = "none"; // just to be safe!
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-    }
 }

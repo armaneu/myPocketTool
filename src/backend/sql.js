@@ -67,9 +67,9 @@ const TEntity = {
      * This method allows you to set the key type if it matches the search.
      */
     setKeys() {  // possible values of [key] can be {PK, PF, FK}
-        if (this.columns_array != null && this.columns_array != undefined && Array.isArray(this.columns_array)) {
+        if (this.columns_array && Array.isArray(this.columns_array)) {
             // Searching for PRIMARY KEY {PK}
-            if (this.pk_array != null && this.pk_array != undefined && Array.isArray(this.pk_array)) {
+            if (this.pk_array && Array.isArray(this.pk_array)) {
                 this.pk_array.forEach(pk => {
                     for (let index = 0; index < this.columns_array.length; index++) {
                         if (this.columns_array[index].name == pk) {
@@ -81,7 +81,7 @@ const TEntity = {
             }
 
             // Searching for PRIMARY FOREIGN {PF}
-            if (this.pf_array != null && this.pf_array != undefined && Array.isArray(this.pf_array)) {
+            if (this.pf_array && Array.isArray(this.pf_array)) {
                 this.pf_array.forEach(pf => {
                     for (let index = 0; index < this.columns_array.length; index++) {
                         if (this.columns_array[index].name == pf) {
@@ -93,7 +93,7 @@ const TEntity = {
             }
 
             // Searching for FOREIGN KEY {FK}
-            if (this.ff_array != null && this.ff_array != undefined && Array.isArray(this.ff_array)) {
+            if (this.fk_array && Array.isArray(this.fk_array)) {
                 this.fk_array.forEach(fk => {
                     for (let index = 0; index < this.columns_array.length; index++) {
                         if (this.columns_array[index].name == fk) {

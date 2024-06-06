@@ -4,6 +4,7 @@ let init_MAIN_state = '';
  * Display the { Connection Parameters } view
  */
 function dialogSaveEntityDetails() {
+    const currentDate = Utils.getCurrentDate();
     const content = `
         <article class="article_SaveEntityDetails">
             <section>
@@ -24,17 +25,17 @@ function dialogSaveEntityDetails() {
                                     </div>
                                     <div class="div_label_input">
                                         <label class="label_filename" for="description">Description</label>
-                                        <input class="input_filename" required type="text" name="description" id="description" maxlength="68" placeholder="Enter the description of the file">
+                                        <input class="input_filename" type="text" name="description" id="description" maxlength="68" placeholder="Enter the description of the file">
                                     </div>
                                 </div>
                                 <div class="div_button_group">
                                     <button type="button" class="button_save_file" id="button_cancel" onclick="dialogSEDCancel();">CANCEL</button>
-                                    <button type="button" class="button_save_file" id="button_save" style="font-weight: bold;" onclick="onSave();">SAVE</button>
+                                    <button type="submit" class="button_save_file" id="button_save" style="font-weight: bold;" onclick="dialogSEDSave();">SAVE</button>
                                 </div>
                             </form>
                         </div>
                         <div class="modal_footer">
-                            <h3 class="h3_modal_footer" id="footer_date" onload="dialogSEDDate();"></h3>
+                            <h3 class="h3_modal_footer" id="footer_date">${currentDate}</h3>
                         </div>
                     </div>
                 </div>
@@ -58,13 +59,7 @@ function dialogSaveEntityDetails() {
         }    
 }
 
-function dialogSEDDate() {
-    const footerDate = document.querySelector("#footer_date");
-    if (!footerDate) {
-        return;
-    }
-    footerDate.value = Utils.getCurrentDate();
-}
+
 
 // When the user clicks on [Cancel] button, clean input elements
 function dialogSEDCancel() {
@@ -108,13 +103,35 @@ function dialogSEDAddListeners() {
        return;
     }
     spanClose.addEventListener("click", dialogSEDClose);
-
-    
-    const footerDate = document.querySelector("#footer_date");
-    if (!footerDate) {
-        return;
-    }
-    footerDate.addEventListener("load", dialogSEDDate);
 }
 
 document.addEventListener("DOMContentLoaded", dialogSEDAddListeners);
+
+
+function dialogSEDSave() {
+    let content = '', html = '';
+    if (entity_full_list && Array.isArray(entity_full_list) && entity_full_list.length > 0) {
+        const filename = document.querySelector("#filename");
+        const description = document.querySelector("#description");
+        const footer_date = document.querySelector('#footer_date');
+
+        if (filename && filename.value.length > 0) {
+            entity_full_list.forEach(entity => {
+                content += Utils.generateHTMLTableFromEntity(entity);
+            });
+            html = Utils.generateHTMLDocumentSED(content, description.value, footer_date.innerHTML);
+
+            let blob = new Blob([html], { type: "text/html"});
+            let anchor = document.createElement("a");
+            anchor.download = `Entity details - ${filename.value}.html`;
+            anchor.href = window.URL.createObjectURL(blob);
+            anchor.target ="_blank";
+            anchor.style.display = "none"; // just to be safe!
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+
+            dialogSEDClose();
+        }
+    }
+}
