@@ -1,0 +1,271 @@
+/**********************************************************************************/
+/*                               DIALOG BOXES STYLES                              */
+/**********************************************************************************/
+
+:root {
+    /* Colors according to Message Box type */
+    --color-error-primary: #f44336;  /* Red */
+    --color-warning-primary: #ff9800;  /* Orange */
+    --color-success-primary: #04aa6d;  /* Green */
+    --color-information-primary: #2196f3;  /* Blue */
+    --color-question-primary: #000080;  /* Navy */
+
+    /* Titles according to Message Box type */
+    --message-box-title-error: 'Error';
+    --message-box-title-warning: 'Warning';
+    --message-box-title-success: 'Success';
+    --message-box-title-information: 'Information';
+    --message-box-title-question: 'Question';
+}
+
+
+
+
+.article_modal, .section_modal, .div_modal, .div_dialog {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+/* The Modal (background) */
+.div_modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.div_dialog {
+    position: relative;
+    background-color: var(--white);
+    margin: auto;
+    padding: 0;
+    width: 600px;
+    height: 300px;
+    border: 4px solid var(--color-message-box-primary);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+/* Modal Header */
+.div_dialog_header {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 32px;
+    background-color: var(--color-message-box-primary);
+    color: var(--white);
+}
+
+/* Modal Body */
+.div_dialog_body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 193px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--white);
+}
+
+/* Modal Footer */
+.div_dialog_footer {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 75px;
+    position: absolute;
+    vertical-align: bottom;
+    bottom: 0;
+    text-align: right;        
+    background-color: var(--white);   
+}
+
+.span_dialog_title {
+    margin: 0 0 0 10px;
+    padding: 0;
+    left: 0;
+    line-height: 32px;
+    font-family: "Helvetica, sans-serif", monospace;
+    font-size: 16px;
+    color: var(--white);
+    font-weight: bold;
+}
+
+.span_dialog_X {
+    margin: 0;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--white);
+    float: right;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.span_dialog_X:hover {
+    color: var(--black);
+}
+
+
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+
+.p_message {
+    margin: 20px 20px 0 20px;
+    top: 0;
+    left: 0;
+    font-size: 16px;
+    text-align: justify;
+}
+
+
+
+/* Buttons */
+.div_button_group {
+    margin: 20px 0;
+    padding: 0 20px;
+    text-align: right;
+    
+}
+
+.button_dialog_close, .button_dialog_no {
+    margin: 0;
+    padding: 0;
+    width: 165px;
+    height: 35px;
+    border: 2px solid var(--color-message-box-primary);
+    border-radius: 4px;
+    transition-duration: 0.4s;
+    background-color: var(--white);
+    font-family: "Helvetica, sans-serif", monospace;
+    font-weight: 500;
+}
+
+.button_dialog_close:hover, .button_dialog_no:hover {
+    background-color: var(--color-message-box-primary);
+    color: var(--white);
+}
+
+.button_dialog_yes {
+    margin: 0;
+    padding: 0;
+    width: 165px;
+    height: 35px;
+    border: 2px solid var(--color-message-box-primary);
+    border-radius: 4px;
+    transition-duration: 0.4s;
+    background-color: var(--white);
+    font-family: "Helvetica, sans-serif", monospace;
+    font-weight: 500;
+}
+
+.button_dialog_yes:hover {
+    background-color: var(--color-message-box-primary);
+    color: var(--white);
+}
+
+
+/* Allows to change the color of the message box according to message type */
+div.message_box_error {
+    --color-message-box-primary: var(--color-error-primary);
+}
+
+div.message_box_warning {
+    --color-message-box-primary: var(--color-warning-primary);
+}
+
+div.message_box_success {
+    --color-message-box-primary: var(--color-success-primary);
+}
+
+div.message_box_information {
+    --color-message-box-primary: var(--color-information-primary);
+}
+
+div.message_box_question {
+    --color-message-box-primary: var(--color-question-primary);
+}
+
+
+/* Allows to change the 'content' of the message box according to message type */
+div.message_box_error  .span_dialog_title {
+    visibility: hidden;
+}
+div.message_box_error  .span_dialog_title::after {
+    content: var(--message-box-title-error);
+    visibility: visible;
+}
+
+div.message_box_warning  .span_dialog_title {
+    visibility: hidden;
+}
+div.message_box_warning  .span_dialog_title::after {
+    content: var(--message-box-title-warning);;
+    visibility: visible;
+}
+
+div.message_box_success  .span_dialog_title {
+    visibility: hidden;
+}
+div.message_box_success  .span_dialog_title::after {
+    content: var(--message-box-title-success);;
+    visibility: visible;
+}
+
+div.message_box_information  .span_dialog_title {
+    visibility: hidden;
+}
+div.message_box_information  .span_dialog_title::after {
+    content: var(--message-box-title-information);;
+    visibility: visible;
+}
+
+div.message_box_question  .span_dialog_title {
+    visibility: hidden;
+}
+div.message_box_question  .span_dialog_title::after {
+    content: var(--message-box-title-question);
+    visibility: visible;
+}
+
+/* Allows to display the buttons according to message type */
+div.message_box_error  .button_dialog_yes, div.message_box_error  .button_dialog_no,
+div.message_box_warning  .button_dialog_yes, div.message_box_warning  .button_dialog_no,
+div.message_box_success  .button_dialog_yes, div.message_box_success  .button_dialog_no,
+div.message_box_information  .button_dialog_yes, div.message_box_information  .button_dialog_no {
+    display: none;
+}
+
+div.message_box_question  .button_dialog_yes, div.message_box_question  .button_dialog_no {
+    display: inline-block;
+}
+
+div.message_box_question  .button_dialog_close {
+    display: none;
+}

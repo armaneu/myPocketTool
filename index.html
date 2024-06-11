@@ -17,10 +17,12 @@
     <link rel="stylesheet" href="styles/diagram.css">
     <link rel="stylesheet" href="styles/connection.css">
     <link rel="stylesheet" href="styles/dialogs.css">
+    <link rel="stylesheet" href="styles/messages.css">
 
     <!-- View -->
     <script defer src="src/frontend/view/v__globals.js"></script>
     <script defer src="src/frontend/view/v__dialogs.js"></script>
+    <script defer src="src/frontend/view/v__messages.js"></script>
     <script defer src="src/frontend/view/v__00_welcome.js"></script>
     <script defer src="src/frontend/view/v__01_tools.js"></script>
     <script defer src="src/frontend/view/v__02_settings.js"></script>
@@ -43,7 +45,12 @@
                 <ul class="menu">
                     <li><a href="#">File</a>
                         <ul class="submenu">
-                            <li onclick="dialogSaveEntityDetails()"><a href="#">Save Entity details</a></li>
+                            <li onclick="dialogSaveEntityDetails();"><a href="#">Save Entity details</a></li>
+                            <li onclick="showMessageBox(messageBoxType.ERROR);"><a href="#">Message Box ERROR</a></li>
+                            <li onclick="showMessageBox(messageBoxType.WARNING);"><a href="#">Message Box WARNING</a></li>
+                            <li onclick="showMessageBox(messageBoxType.SUCCESS);"><a href="#">Message Box SUCCESS</a></li>
+                            <li onclick="showMessageBox(messageBoxType.INFORMATION);"><a href="#">Message Box INFORMATION</a></li>
+                            <li onclick="showMessageBox(messageBoxType.QUESTION);"><a href="#">Message Box QUESTION</a></li>
                         </ul>
                     </li>
                     <li><a href="#">Tools</a>

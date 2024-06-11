@@ -1,4 +1,3 @@
-let init_MAIN_state = '';
 
 /**
  * Display the { Connection Parameters } view
@@ -9,7 +8,7 @@ function dialogSaveEntityDetails() {
         <article class="article_SaveEntityDetails">
             <section>
                 <!-- The Modal -->
-                <div id="modal_SaveEntityDetails" class="modal">
+                <div class="modal" id="modal_SaveEntityDetails">
                     <!-- Modal content -->
                     <div class="modal_content">
                         <div class="modal_header">
@@ -41,7 +40,7 @@ function dialogSaveEntityDetails() {
                 </div>
             </section>
         </article>
-        `;
+    `;
 
 
         try {
@@ -56,7 +55,7 @@ function dialogSaveEntityDetails() {
             document.getElementById("filename").focus();
         } catch (error) {
             
-        }    
+        }
 }
 
 

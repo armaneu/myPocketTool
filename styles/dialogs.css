@@ -88,8 +88,6 @@
     cursor: pointer;
 }
 
-
-
 .div_label_input_grid {
     display: grid;
     grid-template-columns: auto;
